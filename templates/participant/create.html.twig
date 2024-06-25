@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Mon profil</h2>
+    {{ form_start(participantForm) }}
+    {{ form_widget(participantForm) }}
+    <button>Enregistrer </button>
+    <button>Annuler </button>
+    {{ form_end(participantForm) }}
+{% endblock %}
