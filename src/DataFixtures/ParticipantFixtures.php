@@ -37,7 +37,7 @@ class ParticipantFixtures extends Fixture
                 ->setMail($faker->email())
                 ->setTelephone($faker->phoneNumber())
                 ->setRoles(['ROLE_USER'])
-                ->setMotPasse($this->userPasswordHasher->hashPassword($participant,'1234'))
+                ->setPassword($this->userPasswordHasher->hashPassword($participant,'1234'))
                 ->setActif($faker->boolean(80))
                 ->setCampus($faker->randomElement($campuses));
 

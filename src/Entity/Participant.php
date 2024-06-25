@@ -39,11 +39,10 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column(length: 255)]
-    private ?string $motPasse = null;
+    #[ORM\Column]
+    private ?string $password = null;
 
     #[ORM\Column]
-
     private ?bool $actif = null;
 
     /**
@@ -179,17 +178,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMotPasse(): ?string
-    {
-        return $this->motPasse;
-    }
 
-    public function setMotPasse(string $motPasse): static
-    {
-        $this->motPasse = $motPasse;
-
-        return $this;
-    }
+//    public function getMotPasse(): ?string
+//    {
+//        return $this->motPasse;
+//    }
+//
+//    public function setMotPasse(string $motPasse): static
+//    {
+//        $this->motPasse = $motPasse;
+//
+//        return $this;
+//    }
 
     public function isActif(): ?bool
     {
