@@ -49,6 +49,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $motPasse = null;
 
     #[ORM\Column]
+
     private ?bool $actif = null;
 
     /**
