@@ -44,7 +44,7 @@ class ParticipantType extends AbstractType
                 'query_builder' => function (SortieRepository $sortieRepository){
                         return $sortieRepository
                                 ->createQueryBuilder('s')
-                                ->addOrderBy('c.name');
+                                ->addOrderBy('s.name');
                 }
 
             ])
