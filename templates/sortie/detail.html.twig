@@ -1,9 +1,9 @@
-{# {% extends 'base.html.twig' %} #}
+ {% extends 'base.html.twig' %}
 
 {% block body %}
     <h2>Afficher une sortie</h2>
-    <div>
-        <div>
+    <div class="row justify-content-around">
+        <div class="col-4">
             <div>Nom de la sortie: {{ sortie.nom }}</div>
             <div>Date et heure de la sortie : {{ sortie.dateHeureDebut | date("Y-m-d") }}</div>
             <div>Date limit d'inscription : {{ sortie.dateLimiteInscription | date("Y-m-d")}}</div>
@@ -11,7 +11,7 @@
             <div>Durée : {{ sortie.duree }}</div>
             <div>Description et infos : {{ sortie.infosSortie | nl2br }}</div>
         </div>
-        <div>
+        <div class="col-4">
             <div>Campus : {{ sortie.campus.nom }}</div>
             <div>Lieu : {{ sortie.lieu.nom }}</div>
             <div>Rue :  {{ sortie.lieu.rue }} </div>
