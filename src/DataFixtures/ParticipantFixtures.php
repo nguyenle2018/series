@@ -34,6 +34,7 @@ class ParticipantFixtures extends Fixture
             $participant = new Participant();
             $participant->setNom($faker->lastName())
                 ->setPrenom($faker->firstName())
+                ->setPseudo($faker->userName())
                 ->setMail($faker->email())
                 ->setTelephone($faker->phoneNumber())
                 ->setRoles(['ROLE_USER'])
