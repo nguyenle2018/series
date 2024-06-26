@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\SerieRepository;
@@ -18,11 +20,22 @@ class SortieController extends AbstractController
     public function create(EntityManagerInterface $entityManager, Request $request): Response
     {
         $sortie = new Sortie();
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            // Récupérer l'utilisateur connecté
+            //$user = $this->getUser();
+
+            $participant = $entityManager->getRepository(Participant::class)->find(196);
+            $etat = $entityManager->getRepository(Etat::class)->find(115);
+            //dd($participant);
+
+            // Associer le participant à la sortie
+            $sortie->setOrganisateur($participant);
+            $sortie->setEtat($etat);
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -31,8 +44,10 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        return $this->render('sortie/create.html.twig', [
+        return $this->render('sortie/sortie.html.twig', [
             'sortieForm' => $sortieForm->createView(),
+            'sortie' => $sortie, // Passer la variable sortie à la vue Twig
+
         ]);
     }
 
