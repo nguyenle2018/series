@@ -8,10 +8,15 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\Participant
-                property: mail
+#                property: mail
+
+
         # used to reload user from session & other features (e.g. switch_user)
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
+#        secured_area:
+#            form_login:
+#                enable_csrf: true
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
