@@ -34,12 +34,12 @@ class ParticipantController extends AbstractController
             $participant->setPrenom($participant->getNom());
             $participant->setMail($participant->getMail());
             $participant->setTelephone($participant->getTelephone());
-            $participant->setMotPasse($participant->getMotPasse());
+            $participant->setPassword($participant->getPassword());
             $participant->setCampus($participant->getCampus());
+            $participant->setActif(true);
 
 
             $entityManager->persist($participant);
-
             $entityManager->flush();
         }
 
@@ -47,4 +47,6 @@ class ParticipantController extends AbstractController
             'participantForm' => $participantForm
         ]);
     }
+
+
 }
