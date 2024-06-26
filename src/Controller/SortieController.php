@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\SortieType;
@@ -29,8 +30,8 @@ class SortieController extends AbstractController
             // Récupérer l'utilisateur connecté
             //$user = $this->getUser();
 
-            $participant = $entityManager->getRepository(Participant::class)->find(196);
-            $etat = $entityManager->getRepository(Etat::class)->find(115);
+            $participant = $entityManager->getRepository(Participant::class)->find(61);
+            $etat = $entityManager->getRepository(Etat::class)->find(19);
             //dd($participant);
 
             // Associer le participant à la sortie
@@ -39,15 +40,35 @@ class SortieController extends AbstractController
             $entityManager->persist($sortie);
             $entityManager->flush();
 
+            //ajout de la sortie à la liste des sorties du lieu
+            $lieuDeLaSortieEnBase = $entityManager->getRepository(Lieu::class)->find($sortie->getLieu());
+            $lieuDeLaSortieEnBase->addSorty($sortie);
+            //enregistrement de la liste des sorties :
+            $entityManager->persist($lieuDeLaSortieEnBase);
+            $entityManager->flush();
+
             $this->addFlash('success', 'Sortie créée avec succès !');
 
-            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+            return $this->redirectToRoute('lieu_creation', ['id' => $sortie->getId()]);
         }
 
         return $this->render('sortie/sortie.html.twig', [
             'sortieForm' => $sortieForm->createView(),
             'sortie' => $sortie, // Passer la variable sortie à la vue Twig
 
+        ]);
+    }
+
+    #[Route('/liste', name: 'liste')]
+    public function getAll(
+        EntityManagerInterface $entityManager,
+        Request $request
+    ): Response
+    {
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sorties,
         ]);
     }
 
