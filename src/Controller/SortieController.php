@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\SerieType;
 use App\Form\SortieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
-    #[Route('/create', name: 'sortie_create')]
+    #[Route('/create', name: 'create')]
     public function create(EntityManagerInterface $entityManager, Request $request): Response
     {
         $sortie = new Sortie();
@@ -51,5 +52,24 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/update/{id}', name: 'update')]
+    public function update(Sortie $sortie, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortieForm->handleRequest($request);
+
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie mise à jour avec succès !');
+
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        return $this->render('sortie/updated.html.twig', [
+            'sortieForm' => $sortieForm->createView(),
+            'sortie' => $sortie,
+        ]);
+    }
 }
 
