@@ -4,7 +4,10 @@
     <h2>Mon profil</h2>
     {{ form_start(participantForm) }}
     {{ form_widget(participantForm) }}
-    <button>Enregistrer </button>
-    <button>Annuler </button>
+    <button type="submit">Enregistrer</a> </button>
+    <button><a href="{{ path('participants_create') }}">Annuler</a></button>
     {{ form_end(participantForm) }}
+
+
+
 {% endblock %}
