@@ -37,7 +37,7 @@ class Sortie
     /**
      * @var Collection<int, Participant>
      */
-    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortieRejointes')]
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortieRejointes', cascade: ['persist'])]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sortieOrganisees')]
@@ -212,4 +212,6 @@ class Sortie
 
         return $this;
     }
+
+
 }

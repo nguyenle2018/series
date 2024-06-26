@@ -5,7 +5,9 @@ namespace App\Form;
 use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
+use Doctrine\DBAL\Types\BooleanType;
 use phpDocumentor\Reflection\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -20,38 +22,32 @@ class ParticipantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('roles', TextType:: class, [
+            ->add('pseudo', TextType:: class, [
                 'label'=> 'Pseudo :'
             ])
             ->add('nom', TextType::class, [
-                'label' => 'Nom :'
+                'label' => 'Nom : '
             ])
             ->add('prenom', TextType::class, [
-                'label' => 'Prénom :'
+                'label' => 'Prénom : '
             ])
             ->add('telephone', TextType::class, [
-                'label' => 'Téléphone'
+                'label' => 'Téléphone : '
             ])
             ->add('mail', EmailType::class, [
-                'label' => 'Email :'
+                'label' => 'Email : '
             ])
-            ->add('motPasse', PasswordType::class, [
-                'label' => 'mot de Passe'
+            ->add('password', PasswordType::class, [
+                'label' => 'Mot de Passe: '
             ])
 
-            ->add('sortieRejointes', EntityType::class, [
-                'class' => Sortie::class,
-                'query_builder' => function (SortieRepository $sortieRepository){
-                        return $sortieRepository
-                                ->createQueryBuilder('s')
-                                ->addOrderBy('s.name');
-                }
-
-            ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'choice_label' => 'id',
+                'query_builder' => function (CampusRepository $campusRepository){
+                        return $campusRepository ->createQueryBuilder('c')->addOrderBy('c.nom');
+                }
             ])
+
         ;
     }
 
