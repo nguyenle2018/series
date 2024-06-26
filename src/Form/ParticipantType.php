@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Repository\SortieRepository;
 use phpDocumentor\Reflection\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -37,11 +38,15 @@ class ParticipantType extends AbstractType
             ->add('motPasse', PasswordType::class, [
                 'label' => 'mot de Passe'
             ])
-            ->add('actif')
+
             ->add('sortieRejointes', EntityType::class, [
                 'class' => Sortie::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+                'query_builder' => function (SortieRepository $sortieRepository){
+                        return $sortieRepository
+                                ->createQueryBuilder('s')
+                                ->addOrderBy('c.name');
+                }
+
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,

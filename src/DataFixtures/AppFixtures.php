@@ -36,8 +36,9 @@ class AppFixtures extends Fixture
         // $this->addLieu($number, $manager, $villeRepository);
         $this->participantFixtures->load($manager);
         //$this->addParticipant($number, $manager);
-        //$this->addSortie($number, $manager);
         $this->sortieFixtures->load($manager);
+        //$this->addSortie($number, $manager);
+
 
 
         $manager->flush();
