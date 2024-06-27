@@ -8,6 +8,7 @@
         <div>Télephone : {{ participant.telephone }}</div>
         <div>Campus : {{ participant.campus}}</div>
         <div><button>Retour</button></div>
+        <div><button><a href="{{ path('participants_update', {'id': participant.id }) }}">Modifier</a></button></div>
     </div>
 
 {% endblock %}
