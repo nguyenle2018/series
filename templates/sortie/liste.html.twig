@@ -1,3 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
 {% block body %}
 
     <div>
@@ -5,6 +11,11 @@
         {% if app.user %}
             <p>Participant : {{ app.user.prenom }} {{ app.user.nom | first | upper }}. </p>
         {% endif %}
+    </div>
+
+    <h2>Filtrer les sorties</h2>
+    <div>
+        <select name="" id=""></select>
     </div>
 
     <table>
@@ -16,7 +27,7 @@
             <th>Etat</th>
             <th>Inscrit</th>
             <th>Organisateur</th>
-{#            <th>Actions</th>#}
+            <th>Actions</th>
         </tr>
 
         {% for sortie in sorties %}
@@ -28,16 +39,44 @@
                 <td>{{ sortie.etat.libelle }}</td>
                 <td>{{ sortie.participants | filter( participant => participant.pseudo == app.user.pseudo) | join('X')}}</td>
                 <td>{{ sortie.organisateur.pseudo }}</td>
-{#                <td>{{ ? : }}</td>#}
+                <td>
+                    {% if sortie.etat.libelle != 'historisée' or sortie.etat.libelle != 'Créée' %}
+                        <a href="{{ path('app_afficher_sortie', {'id': sortie.id})  }}">afficher</a>
+                    {% endif %}
+
+                    {% if sortie.organisateur.pseudo == app.user.pseudo %}
+                        <a href="{{ path('sortie_update', {'id': sortie.id})  }}">modifier</a>
+                    {% endif %}
+
+                    {% if sortie.organisateur.pseudo ==  app.user.pseudo and sortie.etat.libelle == 'Créée' %}
+                        <a href="{{ path('sortie_publier', {'id': sortie.id})  }}">publier</a>
+                    {% endif %}
+
+                    {% if sortie.organisateur.pseudo ==  app.user.pseudo
+                        and ( sortie.etat.libelle == 'Créée' or sortie.etat.libelle != 'Ouverte' or sortie.etat.libelle != 'Cloturée' ) %}
+                        <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}">annuler</a>
+                    {% endif %}
+
+                    {% if sortie.etat.libelle != 'Ouverte' and not (sortie.participants.contains(app.user.pseudo)) %}
+                        {# autre option à tester pour vérifier si le participant est inscrit à la sortie :
+                            and (filter( participant => participant.pseudo == app.user.pseudo)) is defined #}
+                        <a href="{{ path('sortie_inscription', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">S'inscrire</a>
+                    {% endif %}
+
+                    {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and not (sortie.participants.contains(app.user.pseudo)) %}
+                        {# autre option à tester pour vérifier si le participant est inscrit à la sortie :
+                            and (filter( participant => participant.pseudo == app.user.pseudo)) is defined
+                            and not (sortie.participants.contains(app.user.pseudo))
+                            app.user.pseudo not in sortie.participants
+                        #}
+
+                        <a href="{{ path('sortie_desistement', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">Se désinscrire</a>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
 
     </table>
-    <a href="{{ path('sortie_sortie_create') }}">Créer une sortie</a>
+    <a href="{{ path('sortie_create') }}">Créer une sortie</a>
 
 {% endblock %}
-
-{% block title %}
-
-{% endblock %}
-

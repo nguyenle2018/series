@@ -106,5 +106,67 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/publier/{id}', name: 'publier', requirements: ['id' => '\d+'])]
+    public function publier(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository,
+        int     $id
+    ): Response
+    {
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sorties,
+        ]);
+    }
+
+    #[Route('/annuler/{id}', name: 'annuler', requirements: ['id' => '\d+'])]
+    public function annuler(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository,
+        int     $id
+    ): Response
+    {
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sorties,
+        ]);
+    }
+
+    #[Route('/inscription/{id}/{idParticipant}', name: 'inscription', requirements: ['id' => '\d+', 'idParticipants' => '\d+'])]
+    public function inscription(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository,
+        int     $id,
+        int $idParticipant
+    ): Response
+    {
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sorties,
+        ]);
+    }
+
+    #[Route('/inscription/{id}/{idParticipant}', name: 'desistement', requirements: ['id' => '\d+', 'idParticipants' => '\d+'])]
+    public function desistement(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository,
+        int     $id,
+        int $idParticipant
+    ): Response
+    {
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sorties,
+        ]);
+    }
+
 }
 

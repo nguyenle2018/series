@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
 
     private function addEtat(ObjectManager $manager){
 
-        $tousLesEtats = ['Créée', 'Ouverte', 'Cloturée', 'Activité en cours', 'Terminée', 'Annulée'];
+        $tousLesEtats = ['Créée', 'Ouverte', 'Cloturée', 'Activité en cours', 'Terminée', 'Annulée', 'historisée'];
         for ($i = 0; $i < sizeof($tousLesEtats); $i++) {
             $etat = new Etat();
             $etat->setLibelle($tousLesEtats[$i]);
