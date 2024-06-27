@@ -13,11 +13,50 @@
         {% endif %}
     </div>
 
+    {# Partie haute de la page permettant de filtrer les sorties #}
     <h2>Filtrer les sorties</h2>
-    <div>
-        <select name="" id=""></select>
-    </div>
+{#    <div>#}
+{#        <label for="choixCampus">Choix du campus de la sortie</label>#}
+{#        <select name="choixCampus" id="choixCampus">#}
+{#            <option value="">les campus disponibles</option>#}
+{#            {% for campus in campuses %}#}
+{#                <option value="{{ campus.id }}">{{ campus.nom }}</option>#}
+{#            {% endfor %}#}
+{#        </select>#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="choixNom">Le nom de la sortie contient: </label>#}
+{#        <input id="choixNom" type="search">#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="choixDateDebut">Entre: </label>#}
+{#        <input id="choixDateDebut" type="date">#}
 
+{#        <label for="choixDateFin">Entre: </label>#}
+{#        <input id="choixDateFin" type="date">#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="etreOrganisateur">Sorties dont je suis l'organisateur</label>#}
+{#        <input type="checkbox" id="etreOrganisateur" value="etreOrganisateur">#}
+
+{#        <label for="etreOrganisateur">Sorties auxquelles je suis inscrit/e</label>#}
+{#        <input type="checkbox" id="etreOrganisateur" value="etreOrganisateur">#}
+
+{#        <label for="etreOrganisateur">Sorties auxquelles je ne suis pas inscrit/e</label>#}
+{#        <input type="checkbox" id="etreOrganisateur" value="etreOrganisateur">#}
+
+{#        <label for="etreOrganisateur">Sorties passées</label>#}
+{#        <input type="checkbox" id="etreOrganisateur" value="etreOrganisateur">#}
+{#    </div>#}
+{#    <div>#}
+{#        <button>Rechercher</button>#}
+{#    </div>#}
+
+    {{ form_start() }}
+    {{ form_widget() }}
+    {{ form_end() }}
+
+    {# Partie basse contenant la liste des sorties suivant les possibles filtres mis dans la partie haute #}
     <table>
         <tr>
             <th>Nom de la sortie</th>
@@ -60,7 +99,7 @@
                     {% if sortie.etat.libelle != 'Ouverte' and not (sortie.participants.contains(app.user.pseudo)) %}
                         {# autre option à tester pour vérifier si le participant est inscrit à la sortie :
                             and (filter( participant => participant.pseudo == app.user.pseudo)) is defined #}
-                        <a href="{{ path('sortie_inscription', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">S'inscrire</a>
+{#                        <a href="{{ path('sortie_inscription', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">S'inscrire</a>#}
                     {% endif %}
 
                     {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and not (sortie.participants.contains(app.user.pseudo)) %}
@@ -69,8 +108,7 @@
                             and not (sortie.participants.contains(app.user.pseudo))
                             app.user.pseudo not in sortie.participants
                         #}
-
-                        <a href="{{ path('sortie_desistement', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">Se désinscrire</a>
+{#                        <a href="{{ path('sortie_desistement', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">Se désinscrire</a>#}
                     {% endif %}
                 </td>
             </tr>

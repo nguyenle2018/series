@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\models\SearchEvent;
+use App\Form\SearchEventType;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
@@ -78,9 +81,15 @@ class SortieController extends AbstractController
     ): Response
     {
         $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $campuses = $entityManager->getRepository(Campus::class)->findAll();
+
+//        $filter = new SearchEvent();
+//        $filterForm = $this->createForm(SearchEvent::class, $filter);
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
+            'campuses' => $campuses,
+//            'filterForm'=> $filterForm
         ]);
     }
 
@@ -164,7 +173,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/inscription/{id}/{idParticipant}', name: 'desistement', requirements: ['id' => '\d+', 'idParticipants' => '\d+'])]
+    #[Route('/desistement/{id}/{idParticipant}', name: 'desistement', requirements: ['id' => '\d+', 'idParticipants' => '\d+'])]
     public function desistement(
         EntityManagerInterface $entityManager,
         Request $request,
