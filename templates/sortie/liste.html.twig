@@ -60,7 +60,7 @@
                     {% if sortie.etat.libelle != 'Ouverte' and not (sortie.participants.contains(app.user.pseudo)) %}
                         {# autre option à tester pour vérifier si le participant est inscrit à la sortie :
                             and (filter( participant => participant.pseudo == app.user.pseudo)) is defined #}
-                        <a href="{{ path('sortie_inscription', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">S'inscrire</a>
+                        {# <a href="{{ path('sortie_inscription', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">S'inscrire</a> #}
                     {% endif %}
 
                     {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and not (sortie.participants.contains(app.user.pseudo)) %}
@@ -70,7 +70,7 @@
                             app.user.pseudo not in sortie.participants
                         #}
 
-                        <a href="{{ path('sortie_desistement', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">Se désinscrire</a>
+                        {# <a href="{{ path('sortie_desistement', {'idSortie': sortie.id, 'idParticipant': app.user.id })  }}">Se désinscrire</a> #}
                     {% endif %}
                 </td>
             </tr>
