@@ -5,9 +5,8 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Entity\Sortie;
-use App\Form\SerieType;
 use App\Form\SortieType;
-use App\Repository\SerieRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,5 +70,20 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
         ]);
     }
+    #[Route('/detail/{id}', name: 'detail', requirements: ['id' => '\d+'])]
+    public function detail(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository,
+        int     $id
+    ): Response
+    {
+        $sortie = $sortieRepository->find($id);
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie
+        ]);
+    }
+
 }
 
