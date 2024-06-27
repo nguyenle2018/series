@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -17,21 +19,29 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: 'La date et heure de début sont requises.')]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'La date et heure de début sont requises.')]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: 'La date limite d\'inscription est requise.')]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Le nombre maximum d\'inscriptions est requis.')]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 1000)]
+    #[Assert\NotBlank(message: 'Les informations sur la sortie sont requises.')]
+    #[Assert\Length(max: 1000, maxMessage: 'Les informations ne peuvent pas dépasser {{ limit }} caractères.')]
     private ?string $infosSortie = null;
 
     /**
@@ -213,8 +223,17 @@ class Sortie
 
         return $this;
     }
-
+    #[Assert\Callback]
+    public function validateDates(ExecutionContextInterface $context): void
+    {
+        if ($this->dateHeureDebut <= $this->dateLimiteInscription) {
+            $context->buildViolation('La date et heure de début doit être strictement supérieur à la date limite d\'inscription.')
+                ->atPath('dateHeureDebut')
+                ->addViolation();
+        }
+    }
 
 
 
 }
+

@@ -27,6 +27,7 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
             // Récupérer l'utilisateur connecté
             //$user = $this->getUser();
 
@@ -37,6 +38,16 @@ class SortieController extends AbstractController
             // Associer le participant à la sortie
             $sortie->setOrganisateur($participant);
             $sortie->setEtat($etat);
+
+            //condition sur les dates
+//            $dateHeureDebut = $sortie->getDateHeureDebut();
+//            $dateLimiteInscription = $sortie->getDateLimiteInscription();
+//
+//            if ($dateHeureDebut <= $dateLimiteInscription) {
+//                $this->addFlash('error', 'La date et heure de début doivent être après la date limite d\'inscription.');
+//                return $this->redirectToRoute('/create');
+//            }
+
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -50,6 +61,7 @@ class SortieController extends AbstractController
             $this->addFlash('success', 'Sortie créée avec succès !');
 
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+
         }
 
         return $this->render('sor
