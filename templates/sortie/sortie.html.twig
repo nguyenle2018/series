@@ -10,21 +10,11 @@
     {{ form_widget(sortieForm) }}
     <a href="{{ path('lieu_creation') }}">Ajouter un autre lieu</a>
     <br>
+
     <button type="submit" class="btn">Enregistrer</button>
     {{ form_end(sortieForm) }}
 
-    {% if sortie.lieu is not null %}
-        <h2>Détails du Lieu</h2>
-        <p>Nom : {{ sortie.lieu.nom }}</p>
-        <p>Rue : {{ sortie.lieu.rue }}</p>
-        <p>Latitude : {{ sortie.lieu.latitude }}</p>
-        <p>Longitude : {{ sortie.lieu.longitude }}</p>
 
-        {% if sortie.lieu.ville is not null %}
-            <h2>Détails de la Ville</h2>
-            <p>Nom : {{ sortie.lieu.ville.nom }}</p>
-        {% endif %}
-    {% endif %}
 {% endblock %}
 
 
