@@ -1,0 +1,25 @@
+{# {% extends 'base.html.twig' %}#}
+
+{% block title %}
+    Modifier Sortie
+{% endblock %}
+
+{% block body %}
+    <h1>Modifier Sortie</h1>
+
+    {{ form_start(sortieForm) }}
+    {{ form_widget(sortieForm) }}
+
+    <div class="btn-group" role="group">
+        <button class="btn btn-primary" type="submit" name="action" value="save">Enregistrer</button>
+        <button class="btn btn-success" type="submit" name="action" value="publish">Publier la sortie</button>
+        <button class="btn btn-danger" type="submit" name="action" value="delete">Supprimer la sortie</button>
+        <button class="btn btn-secondary" type="submit" name="action" value="cancel">Annuler</button>
+    </div>
+
+    {{ form_end(sortieForm) }}
+
+    {#  <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-secondary mt-3">Retour aux détails</a>#}
+{% endblock %}
+
+
