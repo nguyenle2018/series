@@ -18,6 +18,13 @@
                     </a>
                 </h1>
 {#                {% include 'menu/nav.html.twig' %}#}
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="flash flash-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
                 <div>
                     <h4>Date du jour : {{ "now" | date('d/m/Y')}}</h4>
 {#                    <h4>Participant : {{ participant.prenom }}  {{ participant.nom }}</h4>#}

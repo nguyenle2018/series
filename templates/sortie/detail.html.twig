@@ -12,32 +12,45 @@
             <div>Description et infos : {{ sortie.infosSortie | nl2br }}</div>
         </div>
         <div class="col-4">
-            <div>Campus : {{ sortie.campus.nom }}</div>
-            <div>Lieu : {{ sortie.lieu.nom }}</div>
-            <div>Rue :  {{ sortie.lieu.rue }} </div>
-            <div>Code Postal : {{ sortie.lieu.ville.codePostal }}</div>
-            <div>Latitude : {{  sortie.lieu.latitude }}</div>
+            <div>Campus : <span>{{ sortie.campus.nom }}</span></div>
+            <div>Lieu : <span>{{ sortie.lieu.nom }}</span></div>
+            <div>Rue :  <span>{{ sortie.lieu.rue }}</span> </div>
+            <div>Code Postal : <span>{{ sortie.lieu.ville.codePostal }}</span></div>
+            <div>Latitude : <span>{{  sortie.lieu.latitude }}</span></div>
             <div>Longtitude : {{  sortie.lieu.longitude }}</div>
         </div>
     </div>
 
     <div>
         <h3>Liste des participants inscrits</h3>
-        {% for participant in sortie.participants %}
-            <table>
+        {% if sortie.participants is not empty %}
+            <table class="table">
+                <thead>
                 <tr>
                     <th>Pseudo</th>
+                    <th>Prénom</th>
                     <th>Nom</th>
                 </tr>
-                <tr>
-                    <th>{{ participant.pseudo }}</th>
-                    <th>{{ participant.prenom }}  {{ participant.nom }}</th>
-                </tr>
+                </thead>
+                <tbody>
+                {% for participant in sortie.participants %}
+                    <tr>
+                        <td>{{ participant.pseudo }}</td>
+                        <td>{{ participant.prenom }}</td>
+                        <td>{{ participant.nom }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
             </table>
+        {% else %}
+            <p>Aucun participant inscrit pour cette sortie.</p>
+        {% endif %}
 
-        {% endfor %}
+
+
     </div>
 
+    <a href="{{ path('sortie_liste') }}">Retour à la liste des sorties</a>
 
 
 
