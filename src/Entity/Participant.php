@@ -49,6 +49,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Sortie>
      */
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
+
     private Collection $sortieRejointes;
 
     /**

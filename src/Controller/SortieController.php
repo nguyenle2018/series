@@ -52,7 +52,8 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        return $this->render('sortie/sortie.html.twig', [
+        return $this->render('sor
+        tie/sortie.html.twig', [
             'sortieForm' => $sortieForm->createView(),
             'sortie' => $sortie, // Passer la variable sortie à la vue Twig
 
@@ -105,6 +106,8 @@ class SortieController extends AbstractController
             'sortie' => $sortie
         ]);
     }
+
+
 
 }
 

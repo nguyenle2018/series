@@ -23,19 +23,19 @@
 
     <div>
         <h3>Liste des participants inscrits</h3>
-{#        {% for participant in sortie.participants %}#}
-{#            <table>#}
-{#                <tr>#}
-{#                    <th>Pseudo</th>#}
-{#                    <th>Nom</th>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>{{ participant.pseudo }}</th>#}
-{#                    <th>{{ participant.prenom }}  {{ participant.nom }}</th>#}
-{#                </tr>#}
-{#            </table>#}
+        {% for participant in sortie.participants %}
+            <table>
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Nom</th>
+                </tr>
+                <tr>
+                    <th>{{ participant.pseudo }}</th>
+                    <th>{{ participant.prenom }}  {{ participant.nom }}</th>
+                </tr>
+            </table>
 
-{#        {% endfor %}#}
+        {% endfor %}
     </div>
 
 

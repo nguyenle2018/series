@@ -15,10 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class ParticipantController extends AbstractController
 {
     #[Route('/create', name: 'create')]
+    #[Route('/update/{id}', name: 'update')]
     public function create(
         ParticipantRepository   $participantRepository,
         EntityManagerInterface  $entityManager,
-        Request                 $request
+        Request                 $request,
+        int                    $id = null
     ): Response
     {
         $participant = new Participant();
