@@ -32,12 +32,12 @@ class ParticipantController extends AbstractController
             /*
              * @var Uploaded File $file
              * */
-            $participant->setNom($participant->getNom());
-            $participant->setPrenom($participant->getPrenom());
-            $participant->setMail($participant->getMail());
-            $participant->setTelephone($participant->getTelephone());
-            $participant->setPassword($participant->getPassword());
-            $participant->setCampus($participant->getCampus());
+//            $participant->setNom($participant->getNom());
+//            $participant->setPrenom($participant->getPrenom());
+//            $participant->setMail($participant->getMail());
+//            $participant->setTelephone($participant->getTelephone());
+//            $participant->setPassword($participant->getPassword());
+//            $participant->setCampus($participant->getCampus());
             $participant->setActif(true);
 
 

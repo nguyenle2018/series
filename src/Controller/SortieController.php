@@ -10,6 +10,7 @@ use App\Entity\Sortie;
 use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
 use App\Form\SortieType;
+use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -120,10 +121,15 @@ class SortieController extends AbstractController
         int     $id
     ): Response
     {
-        $sortie = $sortieRepository->find($id);
+        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+        $participants = $sortie->getParticipants();
 
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée');
+        }
         return $this->render('sortie/detail.html.twig', [
-            'sortie' => $sortie
+            'sortie' => $sortie,
+            'participants'=>$participants
         ]);
     }
 
@@ -162,15 +168,36 @@ class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
         SortieRepository $sortieRepository,
+        ParticipantRepository $participantRepository,
         int     $id,
         int $idParticipant
     ): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $sortie = $sortieRepository->find($id);
+        $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
+        if(!$sortie || !$participant){
+            throw $this->createNotFoundException('Sortie ou Participant non trouvée !!');
+        }
+        $now = new \DateTime();
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sorties,
-        ]);
+        //vérifier des conditions
+        if ($sortie->getEtat()->getLibelle() !== 'Ouverte' ||
+            $sortie->getDateLimiteInscription() < $now ||
+            count($sortie->getParticipants()) >= $sortie->getNbInscriptionsMax()
+        ) {
+            // Gérer ici le cas où les conditions d'inscription ne sont pas remplies
+            $this->addFlash('error', 'Vous ne pouvez pas vous inscrire à cette sortie pour le moment.');
+
+            return $this->redirectToRoute('sortie_liste');
+        }
+
+        // Ajouter le participant à la sortie
+        $sortie->addParticipant($participant);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+
     }
 
     #[Route('/desistement/{id}/{idParticipant}', name: 'desistement', requirements: ['id' => '\d+', 'idParticipants' => '\d+'])]
@@ -182,12 +209,31 @@ class SortieController extends AbstractController
         int $idParticipant
     ): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        //On récupere l'id de la sortie
+        $sortie = $sortieRepository->find($id);
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sorties,
-        ]);
+        //On prend l'utilisateur de la sortie
+        $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
+
+
+        if (new \DateTime() >= $sortie->getDateHeureDebut()) {
+            $this->addFlash('error', 'Vous ne pouvez plus vous désister car l\'événement a déjà commencé.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+        }
+        if (new \DateTime() >= $sortie->getDateLimiteInscription()) {
+            $this->addFlash('error', 'Vous ne pouvez plus vous désister car la date limite d\'inscription est terminée.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+
+        }
+
+        // Retirer le participant de la sortie
+        $sortie->removeParticipant($participant);
+        $entityManager->flush();
+
+        // Ajouter un message de succès
+        $this->addFlash('success', 'Succès ! Vous n\'appartenez plus à cette sortie .');
+        return $this->redirectToRoute('sortie_liste');
+
     }
-
 }
 
