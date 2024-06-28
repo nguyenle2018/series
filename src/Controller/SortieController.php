@@ -200,12 +200,31 @@ class SortieController extends AbstractController
         int $idParticipant
     ): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        //On récupere l'id de la sortie
+        $sortie = $sortieRepository->find($id);
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sorties,
-        ]);
+        //On prend l'utilisateur de la sortie
+        $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
+
+
+        if (new \DateTime() >= $sortie->getDateHeureDebut()) {
+            $this->addFlash('error', 'Vous ne pouvez plus vous désister car l\'événement a déjà commencé.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+        }
+        if (new \DateTime() >= $sortie->getDateLimiteInscription()) {
+            $this->addFlash('error', 'Vous ne pouvez plus vous désister car la date limite d\'inscription est terminée.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+
+        }
+
+        // Retirer le participant de la sortie
+        $sortie->removeParticipant($participant);
+        $entityManager->flush();
+
+        // Ajouter un message de succès
+        $this->addFlash('success', 'Succès ! Vous n\'appartenez plus à cette sortie .');
+        return $this->redirectToRoute('sortie_liste');
+
     }
-
 }
 

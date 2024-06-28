@@ -30,6 +30,23 @@
 {#                    <h4>Participant : {{ participant.prenom }}  {{ participant.nom }}</h4>#}
                 </div>
              </header>
+
+
+
+
+            {# Afficher les messages flash #}
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }}">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+
+
+
+
             <main>
                 {% block body %}
 
