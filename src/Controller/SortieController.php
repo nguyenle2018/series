@@ -13,6 +13,7 @@ use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,20 +78,94 @@ class SortieController extends AbstractController
 
     #[Route('/liste', name: 'liste')]
     public function getAll(
+        SortieRepository $sortieRepository,
         EntityManagerInterface $entityManager,
         Request $request
     ): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
-        $campuses = $entityManager->getRepository(Campus::class)->findAll();
 
-//        $filter = new SearchEvent();
-//        $filterForm = $this->createForm(SearchEvent::class, $filter);
+        $campuses = $entityManager->getRepository(campus::class)->findAll();
+
+        $qb = $sortieRepository->createQueryBuilder('s');
+        $query = $qb->select('s');
+
+        $searchEvent = new SearchEvent();
+        $formSearchEvent = $this->createForm(SearchEventType::class, $searchEvent);
+        $formSearchEvent->handleRequest($request);
+
+        // Filtre par campus
+        $campus = $searchEvent->getCampus();
+        if ($campus){
+            $query->andWhere('s.campus = :campus');
+            $query->setParameter('campus', $campus);
+        }
+
+        // Filtre par le champs de texte
+        $search = $searchEvent->getSearch();
+        if ($search){
+            $query->andWhere('s.nom LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
+        }
+
+        // Filtre par les dates
+        $dateDebut = $searchEvent->getStartDate();
+        $dateFin = $searchEvent->getEndDate();
+        if ($dateDebut && $dateFin == null){
+            $query->andWhere('s.dateHeureDebut >= :dateDebut');
+            $query->setParameter('dateDebut', $dateDebut);
+        }
+
+        if ($dateFin && $dateDebut == null){
+            $query->andWhere('s.dateHeureDebut <= :dateFin');
+            $query->setParameter('dateDebut', $dateFin);
+        }
+
+        if ($dateFin && $dateDebut){
+            $query->andWhere('s.dateHeureDebut BETWEEN :min AND :max');
+            $query->setParameter('min', $dateDebut);
+            $query->setParameter('max', $dateFin);
+        }
+
+        if ($dateFin < $dateDebut){
+            $this->addFlash('error', 'La End date ne peut pas être inférieure à la date de début');
+        }
+
+        //Filtrage pour les sorties dont je suis organisateur
+        $organisateur = $searchEvent->getSortieOrganisateur();
+        if ($organisateur){
+            $organisateur = $this->getUser();
+            $query->andWhere('s.organisateur = :participant');
+            $query->setParameter('participant', $organisateur);
+        }
+
+        //Filtrage pour les sorties dont je suis inscrit
+        $inscrit = $searchEvent->getSortiesInscrits();
+        if ($inscrit){
+            $user = $this->getUser();
+            $query->andWhere(':participant MEMBER OF s.participants');
+            $query->setParameter('participant', $user);
+        }
+
+        //Filtrage pour les sorties dont je ne suis pas inscrit
+        $nonInscrit = $searchEvent->getSortiesNonInscrits();
+        if ($nonInscrit){
+            $user = $this->getUser();
+            $query->andWhere(':participant NOT MEMBER OF s.participants');
+            $query->setParameter('participant', $user);
+        }
+
+        //Filtrage pour les sorties qui sont passées
+        $sortiesPassee = $searchEvent->getSortiesNonInscrits();
+        if ($sortiesPassee){
+            $query->andWhere('s.');
+            $query->setParameter('participant', $user);
+        }
+
+        $sorties = $query->getQuery()->getResult();
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
-            'campuses' => $campuses,
-//            'filterForm'=> $filterForm
+            'filterForm'=> $formSearchEvent
         ]);
     }
 
