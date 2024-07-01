@@ -12,20 +12,20 @@
     </head>
     <body>
         <div class="container">
-            <header>
-                <h1> <a>
-                        <img src="{{ asset('images/logo.png') }}"  alt=" Sortie ENI">
+            <header class="d-flex justify-content-between align-items-center py-3">
+                <h1> <a href="#">
+                        <img src="{{ asset('images/logo.png') }}"  alt=" Sortie ENI" class="img-fluid" style="max-width: 100px;">
                     </a>
                 </h1>
 {#                {% include 'menu/nav.html.twig' %}#}
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
-                        <div class="flash flash-{{ label }}">
+                        <div class="flash flash-{{ label }} mt-2 bg-info text-dark mt-2">
                             {{ message }}
                         </div>
                     {% endfor %}
                 {% endfor %}
-                <div>
+                <div class="text-end">
                     <h4>Date du jour : {{ "now" | date('d/m/Y')}}</h4>
 {#                    <h4>Participant : {{ participant.prenom }}  {{ participant.nom }}</h4>#}
                 </div>
@@ -36,7 +36,7 @@
 
             {# Afficher les messages flash #}
             {% for label, messages in app.flashes %}
-                <div class="alert alert-{{ label }}">
+                <div class="alert alert-{{ label }} mt-2 ">
                     {% for message in messages %}
                         <p>{{ message }}</p>
                     {% endfor %}
@@ -47,12 +47,12 @@
 
 
 
-            <main>
+            <main class="mt-4">
                 {% block body %}
 
                 {% endblock %}
             </main>
-            <footer>
+            <footer class="text-center py-3 mt-4>
 
                 <div>@Copyright - Group 5  -  {{ "now" | date ('Y') }}</div>
             </footer>

@@ -21,34 +21,46 @@ class ParticipantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
         $builder
-            ->add('pseudo', TextType:: class, [
-                'label'=> 'Pseudo :'
+            ->add('pseudo', TextType::class, [
+                'label' => 'Pseudo :',
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
             ])
             ->add('nom', TextType::class, [
-                'label' => 'Nom : '
+                'label' => 'Nom : ',
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
             ])
             ->add('prenom', TextType::class, [
-                'label' => 'Prénom : '
+                'label' => 'Prénom : ',
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
             ])
             ->add('telephone', TextType::class, [
-                'label' => 'Téléphone : '
+                'label' => 'Téléphone : ',
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
             ])
             ->add('mail', EmailType::class, [
-                'label' => 'Email : '
+                'label' => 'Email : ',
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
             ])
             ->add('password', PasswordType::class, [
-                'label' => 'Mot de Passe: '
+                'label' => 'Mot de Passe : ',
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
             ])
-
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'query_builder' => function (CampusRepository $campusRepository){
-                        return $campusRepository ->createQueryBuilder('c')->addOrderBy('c.nom');
-                }
-            ])
-
-        ;
+                'query_builder' => function (CampusRepository $campusRepository) {
+                    return $campusRepository->createQueryBuilder('c')->orderBy('c.nom', 'ASC');
+                },
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

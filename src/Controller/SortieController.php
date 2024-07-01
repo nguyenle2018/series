@@ -11,6 +11,7 @@ use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
 use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
+use App\Services\Changer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -229,13 +230,34 @@ class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
         SortieRepository $sortieRepository,
-        int     $id
+        int     $id,
     ): Response
     {
         $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $sortie = $sortieRepository->find($id);
+        $now = new \DateTime();
+
+        // Vérifier si l'utilisateur est l'organisateur de la sortie
+        if($sortie->getOrganisateur() !== $this->getUser() ) {
+            throw $this->createNotFoundException('Vous n\'êtes pas autorisé à annuler cette sortie.');
+        }
+
+        // Vérifier si la sortie n'a pas encore commencé
+        if($sortie->getDateHeureDebut() > $now ) {
+            $sortie->setEtat($entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']));
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'La sortie a été annulée avec succès.');
+            return $this->render('sortie/annuler.html.twig', [
+                'sortie' => $sortie
+            ]);
+            //return $this->redirectToRoute('sortie_annuler', ['id' => $sortie->getId()]);
+        }
+        $this->addFlash('error', 'La sortie ne peut pas être annulée car elle a déjà commencé.');
 
         return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sorties,
+            'sorties' => $sorties
         ]);
     }
 
@@ -251,6 +273,7 @@ class SortieController extends AbstractController
     {
         $sortie = $sortieRepository->find($id);
         $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
+
         if(!$sortie || !$participant){
             throw $this->createNotFoundException('Sortie ou Participant non trouvée !!');
         }
@@ -258,7 +281,7 @@ class SortieController extends AbstractController
 
         //vérifier des conditions
         if ($sortie->getEtat()->getLibelle() !== 'Ouverte' ||
-            $sortie->getDateLimiteInscription() < $now ||
+            $sortie->getDateLimiteInscription() <= $now ||
             count($sortie->getParticipants()) >= $sortie->getNbInscriptionsMax()
         ) {
             // Gérer ici le cas où les conditions d'inscription ne sont pas remplies
@@ -283,6 +306,7 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         int     $id,
         int $idParticipant
+
     ): Response
     {
         //On récupere l'id de la sortie
@@ -311,5 +335,8 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_liste');
 
     }
+
+
+
 }
 

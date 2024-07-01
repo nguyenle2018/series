@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Annuler une sortie</h2>
+        <form action="">
+            <div class="form-group mb-3">
+                <label for="nom" class="form-label">Nom de la sortie :</label>
+                <input id="nom" type="text" class="form-control" value="{{ sortie.nom }}" readonly>
+            </div>
+            <div class="form-group mb-3">
+                <label for="date" class="form-label">Date de la sortie :</label>
+                <input id="date" type="text" class="form-control" value="{{ sortie.dateHeureDebut | date('Y-m-d') }}" readonly>
+            </div>
+            <div class="form-group mb-3">
+                <label for="lieu" class="form-label">Campus :</label>
+                <input id="lieu" type="text" class="form-control" value="{{ sortie.lieu.rue }}" readonly>
+            </div>
+            <div class="form-group mb-3">
+                <label for="motif" class="form-label">Motif :</label>
+                <textarea id="motif" class="form-control"></textarea>
+            </div>
+            <div class="d-flex justify-content-start">
+                <a href="{{ path('sortie_liste') }}" class="btn btn-primary mx-2">Enregistrer</a>
+                <a href="{{ path('sortie_liste') }}" class="btn btn-danger">Annuler</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

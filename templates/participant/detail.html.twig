@@ -1,14 +1,30 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-
-    <div>
-        <h2>{{ participant.pseudo }}</h2>
-        <div>Prénom : {{ participant.prenom }}</div>
-        <div>Nom : {{ participant.nom }}</div>
-        <div>Télephone : {{ participant.telephone }}</div>
-        <div>Campus : {{ participant.campus}}</div>
-        <div><button>Retour</button></div>
-        <div><button><a href="{{ path('participants_update', {'id': participant.id }) }}">Modifier</a></button></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <h2 class="mb-3">{{ participant.pseudo }}</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <div class="mb-2"><strong>Prénom :</strong></div>
+                <div class="mb-2"><strong>Nom :</strong></div>
+                <div class="mb-2"><strong>Téléphone :</strong></div>
+                <div class="mb-2"><strong>Campus :</strong></div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-2">{{ participant.prenom }}</div>
+                <div class="mb-2">{{ participant.nom }}</div>
+                <div class="mb-2">{{ participant.telephone }}</div>
+                <div class="mb-2">{{ participant.campus }}</div>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 text-center">
+                <a href="{{ path('sortie_liste') }}" class="btn btn-secondary me-2">Retour</a>
+                <a href="{{ path('participants_update', {'id': participant.id }) }}" class="btn btn-primary">Modifier</a>
+            </div>
+        </div>
     </div>
-
 {% endblock %}

@@ -20,36 +20,42 @@ class SortieType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'label' => 'Nom :'
+                'label' => 'Nom :',
+                'attr' => ['class' => 'form-control']
             ])
             ->add('dateHeureDebut', DateTimeType::class, [
                 'label' => 'Date et heure de début :',
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
             ])
             ->add('duree', IntegerType::class, [
-                'label' => 'Durée (en minutes) :'
+                'label' => 'Durée (en minutes) :',
+                'attr' => ['class' => 'form-control']
             ])
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'label' => 'Date limite d\'inscription :',
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
-                'label' => 'Nombre maximum d\'inscriptions :'
+                'label' => 'Nombre maximum d\'inscriptions :',
+                'attr' => ['class' => 'form-control']
             ])
             ->add('infosSortie', TextType::class, [
-                'label' => 'Informations sur la sortie :'
+                'label' => 'Informations sur la sortie :',
+                'attr' => ['class' => 'form-control']
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
-                'label' => 'Campus :'
+                'label' => 'Campus :',
+                'attr' => ['class' => 'form-control']
             ])
-
-
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
                 'choice_label' => 'nom',
-                'label' => 'Lieu :'
+                'label' => 'Lieu :',
+                'attr' => ['class' => 'form-control']
             ]);
     }
 
