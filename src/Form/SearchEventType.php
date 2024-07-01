@@ -42,9 +42,6 @@ class SearchEventType extends AbstractType
             ->add('sortiesInscrits', CheckboxType::class)
             ->add('sortiesNonInscrits', CheckboxType::class)
             ->add('sortiesPassees', CheckboxType::class)
-            ->add('submit', SubmitType::class, [
-                'label' => 'Rechercher',
-            ])
         ;
     }
 
