@@ -1,64 +1,73 @@
  {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2>Afficher une sortie</h2>
-    <div class="row justify-content-around">
-        <div class="col-4">
-            <div>Nom de la sortie: {{ sortie.nom }}</div>
-            <div>Date et heure de la sortie : {{ sortie.dateHeureDebut | date("Y-m-d") }}</div>
-            <div>Date limit d'inscription : {{ sortie.dateLimiteInscription | date("Y-m-d")}}</div>
-            <div>Nombre de places : {{ sortie.nbInscriptionsMax }}</div>
-            <div>Durée : {{ sortie.duree }}</div>
-            <div>Description et infos : {{ sortie.infosSortie | nl2br }}</div>
+    <div class="container mt-5">
+        <h2 class="mb-4">Afficher une sortie</h2>
+        <div class="row justify-content-around">
+            <div class="col-md-5 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Détails de la sortie</h5>
+                        <p class="card-text"><strong>Nom de la sortie:</strong> {{ sortie.nom }}</p>
+                        <p class="card-text"><strong>Date et heure de la sortie:</strong> {{ sortie.dateHeureDebut | date("Y-m-d") }}</p>
+                        <p class="card-text"><strong>Date limite d'inscription:</strong> {{ sortie.dateLimiteInscription | date("Y-m-d") }}</p>
+                        <p class="card-text"><strong>Nombre de places:</strong> {{ sortie.nbInscriptionsMax }}</p>
+                        <p class="card-text"><strong>Durée:</strong> {{ sortie.duree }} minutes</p>
+                        <p class="card-text"><strong>Description et infos:</strong> {{ sortie.infosSortie | nl2br }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Informations du lieu</h5>
+                        <p class="card-text"><strong>Campus:</strong> {{ sortie.campus.nom }}</p>
+                        <p class="card-text"><strong>Lieu:</strong> {{ sortie.lieu.nom }}</p>
+                        <p class="card-text"><strong>Rue:</strong> {{ sortie.lieu.rue }}</p>
+                        <p class="card-text"><strong>Code Postal:</strong> {{ sortie.lieu.ville.codePostal }}</p>
+                        <p class="card-text"><strong>Latitude:</strong> {{ sortie.lieu.latitude }}</p>
+                        <p class="card-text"><strong>Longitude:</strong> {{ sortie.lieu.longitude }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <div>Campus : <span>{{ sortie.campus.nom }}</span></div>
-            <div>Lieu : <span>{{ sortie.lieu.nom }}</span></div>
-            <div>Rue :  <span>{{ sortie.lieu.rue }}</span> </div>
-            <div>Code Postal : <span>{{ sortie.lieu.ville.codePostal }}</span></div>
-            <div>Latitude : <span>{{  sortie.lieu.latitude }}</span></div>
-            <div>Longtitude : {{  sortie.lieu.longitude }}</div>
-        </div>
-    </div>
 
-    <div>
-        <h3>Liste des participants inscrits</h3>
-        {% if sortie.participants is not empty %}
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Pseudo</th>
-                    <th>Prénom</th>
-                    <th>Nom</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for participant in sortie.participants %}
+        <div class="mt-4">
+            <h3>Liste des participants inscrits</h3>
+            {% if sortie.participants is not empty %}
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ participant.pseudo }}</td>
-                        <td>{{ participant.prenom }}</td>
-                        <td>{{ participant.nom }}</td>
+                        <th>Pseudo</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Aucun participant inscrit pour cette sortie.</p>
-        {% endif %}
+                    </thead>
+                    <tbody>
+                    {% for participant in sortie.participants %}
+                        <tr>
+                            <td>{{ participant.pseudo }}</td>
+                            <td>{{ participant.prenom }}</td>
+                            <td>{{ participant.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Aucun participant inscrit pour cette sortie.</p>
+            {% endif %}
 
 
+
+        </div>
+
+        <div class="mt-4">
+            {% if sortie.dateHeureDebut > 'now'|date %}
+                <a href="{{ path('sortie_desistement', {'id': sortie.id, 'idParticipant': app.user.id}) }}" class="btn btn-danger">Se désister</a>
+            {% endif %}
+
+            <a href="{{ path('sortie_liste') }}" class="btn btn-primary">Retour à la liste</a>
+        </div>
 
     </div>
-
-    <a href="{{ path('sortie_liste') }}">Retour à la liste des sorties</a>
-
-
-    {% if sortie.dateHeureDebut > 'now'|date %}
-        <a href="{{ path('sortie_desistement', {'id': sortie.id, 'idParticipant': app.user.id}) }}" class="btn btn-danger">Se désister</a>
-    {% endif %}
-
-    <a href="{{ path('sortie_liste') }}" class="btn btn-primary">Retour à la liste</a>
-
-
-
 {% endblock %}
