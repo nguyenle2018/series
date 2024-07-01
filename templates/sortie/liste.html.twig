@@ -11,15 +11,65 @@
             {% endif %}
         </div>
 
-    <h2>Filtrer les sorties</h2>
-
-        <div class="container mt-5">
-            {{ form_start(filterForm, {'attr': {'class': 'row g-3'}}) }}
-            <div class="col-md-12">
-                {{ form_widget(filterForm) }}
+        <div class="container mt-4">
+            <h2 class="mb-4">Filtrer les sorties</h2>
+            {{ form_start(filterForm, {'attr': {'class': 'form-inline'}}) }}
+            <div class="row justify-content-center">
+                <div class="col-lg-3 mb-2">
+                    <div class="form-group w-100">
+                        {{ form_label(filterForm.campus, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(filterForm.campus, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-group w-100">
+                        {{ form_label(filterForm.search, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(filterForm.search, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-group w-100">
+                        {{ form_label(filterForm.startDate, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(filterForm.startDate, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-group w-100">
+                        {{ form_label(filterForm.endDate, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(filterForm.endDate, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-check w-100">
+                        {{ form_widget(filterForm.sortieOrganisateur, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(filterForm.sortieOrganisateur, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-check w-100">
+                        {{ form_widget(filterForm.sortiesInscrits, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(filterForm.sortiesInscrits, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-check w-100">
+                        {{ form_widget(filterForm.sortiesNonInscrits, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(filterForm.sortiesNonInscrits, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-2">
+                    <div class="form-check w-100">
+                        {{ form_widget(filterForm.sortiesPassees, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(filterForm.sortiesPassees, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-12 text-center">
+                    <button type="submit" class="btn btn-primary mb-2">Rechercher</button>
+                </div>
             </div>
             {{ form_end(filterForm) }}
-        </div>
+
+            <br>
 
         <table class="table table-striped">
             <tr>
