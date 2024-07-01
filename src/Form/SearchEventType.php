@@ -4,11 +4,11 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Form\models\SearchEvent;
+use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,8 +32,14 @@ class SearchEventType extends AbstractType
                 'placeholder' => 'Choisir un campus',
             ])
             ->add('search')
-            ->add('startDate', DateType::class)
-            ->add('endDate', DateType::class)
+            ->add('startDate', DateType::class, [
+                'widget' => 'single_text',
+                'required' => false
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+                'required' => false
+            ])
             ->add('sortieOrganisateur', CheckboxType::class)
             ->add('sortiesInscrits', CheckboxType::class)
             ->add('sortiesNonInscrits', CheckboxType::class)

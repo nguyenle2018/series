@@ -30,7 +30,7 @@
             <div class="col-lg-3 mb-2">
                 <div class="form-group w-100">
                     {{ form_label(filterForm.endDate, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(filterForm.endDate, {'attr': {'class': 'datepicker'}}) }}
+                    {{ form_widget(filterForm.endDate, {'attr': {'class': 'form-control'}}) }}
                 </div>
             </div>
             <div class="col-lg-3 mb-2">
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="col-lg-12 text-center">
-{#                <button type="submit" class="btn btn-primary mb-2">Rechercher</button>#}
+                <button type="submit" class="btn btn-primary mb-2">Rechercher</button>
             </div>
         </div>
         {{ form_end(filterForm) }}
@@ -133,4 +133,17 @@
                 <a href="{{ path('sortie_create') }}" class="btn btn-primary">Créer une sortie</a>
             </div>
     </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            // you may need to change this code if you are not using Bootstrap Datepicker
+            $('.js-datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+        });
+    </script>
 {% endblock %}

@@ -11,7 +11,6 @@ use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
 use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
-use App\Services\Changer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -45,15 +44,6 @@ class SortieController extends AbstractController
             $sortie->setOrganisateur($participant);
             $sortie->setEtat($etat);
 
-            //condition sur les dates
-//            $dateHeureDebut = $sortie->getDateHeureDebut();
-//            $dateLimiteInscription = $sortie->getDateLimiteInscription();
-//
-//            if ($dateHeureDebut <= $dateLimiteInscription) {
-//                $this->addFlash('error', 'La date et heure de début doivent être après la date limite d\'inscription.');
-//                return $this->redirectToRoute('/create');
-//            }
-
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -78,14 +68,12 @@ class SortieController extends AbstractController
     }
 
     #[Route('/liste', name: 'liste')]
-    public function getAll(
+    public function  getAll(
         SortieRepository $sortieRepository,
         EntityManagerInterface $entityManager,
         Request $request
     ): Response
     {
-
-        $campuses = $entityManager->getRepository(campus::class)->findAll();
 
         $qb = $sortieRepository->createQueryBuilder('s');
         $query = $qb->select('s');
@@ -110,15 +98,16 @@ class SortieController extends AbstractController
 
         // Filtre par les dates
         $dateDebut = $searchEvent->getStartDate();
-        $dateFin = $searchEvent->getEndDate();
-        if ($dateDebut && $dateFin == null){
-            $query->andWhere('s.dateHeureDebut >= :dateDebut');
-            $query->setParameter('dateDebut', $dateDebut);
+        if ($dateDebut === null) {
+            $dateDebut = new \DateTime();
+            $searchEvent->setStartDate($dateDebut);
         }
 
-        if ($dateFin && $dateDebut == null){
-            $query->andWhere('s.dateHeureDebut <= :dateFin');
-            $query->setParameter('dateDebut', $dateFin);
+        $dateFin = $searchEvent->getEndDate();
+        if ($dateFin === null) {
+            $dateReference = new \DateTime();
+            $dateFin = $dateReference->modify('+ 10 years');
+            $searchEvent->setEndDate($dateFin);
         }
 
         if ($dateFin && $dateDebut){
@@ -336,7 +325,4 @@ class SortieController extends AbstractController
 
     }
 
-
-
 }
-
