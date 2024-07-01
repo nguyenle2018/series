@@ -3,12 +3,11 @@
 namespace App\Form\models;
 
 use App\Entity\Campus;
-use App\Entity\Participant;
 
 class SearchEvent
 {
     private ?Campus $campus = null;
-    private ?string $nom = null;
+    private ?string $search = null;
     private ?\DateTime $startDate = null;
     private ?\DateTime $endDate = null;
     private ?bool $sortieOrganisateur = null;
@@ -26,14 +25,14 @@ class SearchEvent
         $this->campus = $campus;
     }
 
-    public function getNom(): ?string
+    public function getSearch(): ?string
     {
-        return $this->nom;
+        return $this->search;
     }
 
-    public function setNom(?string $nom): void
+    public function setSearch(?string $search): void
     {
-        $this->nom = $nom;
+        $this->search = $search;
     }
 
     public function getStartDate(): ?\DateTime
