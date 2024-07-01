@@ -36,6 +36,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
+
+
     /**
      * @var string The hashed password
      */
@@ -64,6 +66,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $pseudo = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photoFilename = null;
 
     public function __construct()
     {
@@ -182,19 +187,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
-//    public function getMotPasse(): ?string
-//    {
-//        return $this->motPasse;
-//    }
-//
-//    public function setMotPasse(string $motPasse): static
-//    {
-//        $this->motPasse = $motPasse;
-//
-//        return $this;
-//    }
-
     public function isActif(): ?bool
     {
         return $this->actif;
@@ -281,6 +273,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+      public function getPhotoFilename(): ?string
+    {
+        return $this->photoFilename;
+    }
+
+    public function setPhotoFilename(?string $photoFilename): static
+    {
+        $this->photoFilename = $photoFilename;
 
         return $this;
     }
