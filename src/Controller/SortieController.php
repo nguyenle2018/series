@@ -157,8 +157,9 @@ class SortieController extends AbstractController
         //Filtrage pour les sorties qui sont passées
         $sortiesPassee = $searchEvent->getSortiesNonInscrits();
         if ($sortiesPassee){
-            $query->andWhere('s.');
-            $query->setParameter('participant', $user);
+            $etat = 'Historisée';
+            $query->andWhere('s.etat = :etat');
+            $query->setParameter('etat', $etat);
         }
 
         $sorties = $query->getQuery()->getResult();
