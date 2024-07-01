@@ -15,10 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SearchEventType extends AbstractType
 {
 
-    public function __construct(private readonly CampusRepository $campusRepository)
-    {
-    }
-
     public function _construct(CampusRepository $campusRepository) {
 
     }
