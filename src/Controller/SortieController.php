@@ -154,6 +154,10 @@ class SortieController extends AbstractController
 
         $sorties = $query->getQuery()->getResult();
 
+        // faire une variable pour vérifier si l'utilisateur est l'organisateur et passer le booléen à la vue
+        // faire une variable pour vérifier si l'utilisateur est membre de la sortie et passer le booléen à la vue pour afficher le boutton
+
+
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
             'filterForm'=> $formSearchEvent
