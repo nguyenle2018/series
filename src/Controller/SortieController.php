@@ -128,7 +128,7 @@ class SortieController extends AbstractController
         }
 
         if ($dateFin < $dateDebut){
-            $this->addFlash('error', 'La End date ne peut pas être inférieure à la date de début');
+            $this->addFlash('error', 'La date de fin ne peut pas être inférieure à la date de début');
         }
 
         //Filtrage pour les sorties dont je suis organisateur
@@ -156,9 +156,9 @@ class SortieController extends AbstractController
         }
 
         //Filtrage pour les sorties qui sont passées
-        $sortiesPassee = $searchEvent->getSortiesNonInscrits();
+        $sortiesPassee = $searchEvent->getSortiesPassees();
         if ($sortiesPassee){
-            $etat = 'Historisée';
+            $etat = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Terminée']);
             $query->andWhere('s.etat = :etat');
             $query->setParameter('etat', $etat);
         }

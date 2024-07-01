@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-
-{% endblock %}
+{% block title %}Liste des sorties{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
@@ -13,14 +11,15 @@
             {% endif %}
         </div>
 
-        <h2 class="mb-4">Filtrer les sorties</h2>
-        <div class="mb-4">
-            <select name="" id=""></select>
-        </div>
     <h2>Filtrer les sorties</h2>
-    {{ form_start(filterForm) }}
-    {{ form_widget(filterForm) }}
-    {{ form_end(filterForm) }}
+
+        <div class="container mt-5">
+            {{ form_start(filterForm, {'attr': {'class': 'row g-3'}}) }}
+            <div class="col-md-12">
+                {{ form_widget(filterForm) }}
+            </div>
+            {{ form_end(filterForm) }}
+        </div>
 
         <table class="table table-striped">
             <tr>
