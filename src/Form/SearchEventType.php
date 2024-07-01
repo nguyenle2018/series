@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Form\models\SearchEvent;
-use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -43,6 +42,9 @@ class SearchEventType extends AbstractType
             ->add('sortiesInscrits', CheckboxType::class)
             ->add('sortiesNonInscrits', CheckboxType::class)
             ->add('sortiesPassees', CheckboxType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => 'Rechercher',
+            ])
         ;
     }
 

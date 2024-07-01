@@ -1,67 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{#{% block body %}#}
-{#    <div class="container mt-4">#}
-
-{#        <h2>Mon profil</h2>#}
-{#        {{ form_start(participantForm, {'attr': {'class': 'mt-4'}}) }}#}
-{#        <div class="mb-3">#}
-{#            {{ form_widget(participantForm, {'attr': {'class': 'form-control'}}) }}#}
-{#        </div>#}
-
-{#        <button type="submit" class="btn btn-primary">Enregistrer</button>#}
-{#        <a href="{{ path('participants_create') }}" class="btn btn-secondary">Annuler</a>#}
-
-{#        {{ form_end(participantForm) }}#}
-
-
-{#    </div>#}
-{#{% endblock %}#}
-
 {% block body %}
-    <div class="container mt-4">
-        <h2>Mon profil</h2>
+    <div class="container mt-4 ">
+        <h2 class="text-center mb-2">Mon profil</h2>
+        <div>
 
-        {{ form_start(participantForm) }}
-
-        <div class="mb-3">
-            {{ form_label(participantForm.pseudo) }}
-            {{ form_widget(participantForm.pseudo) }}
         </div>
+        <div class="m-auto shadow-lg p-3 mb-5 bg-white rounded w-50">
 
-        <div class="mb-3">
-            {{ form_label(participantForm.nom) }}
-            {{ form_widget(participantForm.nom) }}
+            {{ form_start(participantForm) }}
+            <div class="mb-3">
+                {{ form_label(participantForm.pseudo) }}
+                {{ form_widget(participantForm.pseudo) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.nom) }}
+                {{ form_widget(participantForm.nom) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.prenom) }}
+                {{ form_widget(participantForm.prenom) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.telephone) }}
+                {{ form_widget(participantForm.telephone) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.mail) }}
+                {{ form_widget(participantForm.mail) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.password) }}
+                {{ form_widget(participantForm.password) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.campus) }}
+                {{ form_widget(participantForm.campus) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(participantForm.photo) }}
+                {{ form_widget(participantForm.photo, {'attr': {'class': 'form-control-file'}}) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{{ path('participants_create') }}" class="btn btn-secondary">Annuler</a>
+
+            {{ form_end(participantForm) }}
         </div>
-
-        <div class="mb-3">
-            {{ form_label(participantForm.prenom) }}
-            {{ form_widget(participantForm.prenom) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(participantForm.telephone) }}
-            {{ form_widget(participantForm.telephone) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(participantForm.mail) }}
-            {{ form_widget(participantForm.mail) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(participantForm.password) }}
-            {{ form_widget(participantForm.password) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(participantForm.campus) }}
-            {{ form_widget(participantForm.campus) }}
-        </div>
-
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="{{ path('participants_create') }}" class="btn btn-secondary">Annuler</a>
-
-        {{ form_end(participantForm) }}
     </div>
 {% endblock %}

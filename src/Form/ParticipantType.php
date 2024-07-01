@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,6 +61,16 @@ class ParticipantType extends AbstractType
                 },
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
+            ])
+
+            // Add file upload field for profile picture
+            ->add('photo', FileType::class, [
+            'label' => 'Ma photo',
+            'required' => false, // Allow the field to be empty
+            'mapped' => false, // This field is not mapped to a property of Participant entity
+            'attr' => [
+                'accept' => 'image/*', // Only accept image files
+                ],
             ]);
     }
 
