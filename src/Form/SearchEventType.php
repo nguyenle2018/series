@@ -25,12 +25,32 @@ class SearchEventType extends AbstractType
                 'choice_label' => 'nom'
             ])
             ->add('search')
-            ->add('startDate', DateType::class)
-            ->add('endDate', DateType::class)
-            ->add('sortieOrganisateur', CheckboxType::class)
-            ->add('sortiesInscrits', CheckboxType::class)
-            ->add('sortiesNonInscrits', CheckboxType::class)
-            ->add('sortiesPassees', CheckboxType::class)
+            ->add('startDate', DateType::class , [
+                'label' => 'Start Date :',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('endDate', DateType::class, [
+                'label' => 'End Date :',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('sortieOrganisateur', CheckboxType::class, [
+                'label' => 'Sortie Orgnisateur ',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('sortiesInscrits', CheckboxType::class, [
+                'label' => 'Sortie Inscrits ',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('sortiesNonInscrits', CheckboxType::class, [
+                'label' => 'Sortie Non Inscrits ',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('sortiesPassees', CheckboxType::class, [
+                'label' => 'Sortie Passees ',
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Rechercher',
             ])

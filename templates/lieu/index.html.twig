@@ -1,18 +1,41 @@
-<!DOCTYPE html>
+{% extends 'base.html.twig' %}
 
-<title>Hello LieuController!</title>
+
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h2 class="text-center">Création d'un lieu de sortie</h2>
+    <div class="container mt-4 m-auto shadow-lg p-3 mb-5 bg-white rounded w-50">
 
-<h1>Création d'un lieu de sortie</h1>
+        {{ form_start(lieuForm, {'attr': {'class': 'form'}}) }}
 
-{{ form_start(lieuForm) }}
-{{ form_widget(lieuForm) }}
-<button>Enregistrer ce nouveau lieu</button>
-{{ form_end(lieuForm) }}
+        <div class="form-group mb-4">
+            {{ form_label(lieuForm.nom, 'Nom du lieu :', {'label_attr': {'class': 'font-weight-bold'}}) }}
+            {{ form_widget(lieuForm.nom, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group mb-4">
+            {{ form_label(lieuForm.rue, 'Rue :', {'label_attr': {'class': 'font-weight-bold'}}) }}
+            {{ form_widget(lieuForm.rue, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group mb-4">
+            {{ form_label(lieuForm.latitude, 'Latitude :', {'label_attr': {'class': 'font-weight-bold'}}) }}
+            {{ form_widget(lieuForm.latitude, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group mb-4">
+            {{ form_label(lieuForm.longitude, 'Longitude :', {'label_attr': {'class': 'font-weight-bold'}}) }}
+            {{ form_widget(lieuForm.longitude, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group mb-4">
+            {{ form_label(lieuForm.ville, 'Ville :', {'label_attr': {'class': 'font-weight-bold'}}) }}
+            {{ form_widget(lieuForm.ville, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer ce nouveau lieu</button>
+
+        {{ form_end(lieuForm) }}
+    </div>
 
 {% endblock %}

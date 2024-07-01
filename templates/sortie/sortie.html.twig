@@ -3,9 +3,8 @@
 {% block title %}Création d'une sortie{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Création d'une sortie</h1>
-
+    <h2 class="mb-4 text-center">Création d'une sortie</h2>
+    <div class="container mt-5 shadow-lg p-3 mb-5 bg-white rounded w-50">
         {{ form_start(sortieForm, {'attr': {'class': 'row g-3'}}) }}
 
         <div class="col-md-12">
@@ -14,6 +13,9 @@
 
         <div class="col-md-12">
             <a href="{{ path('lieu_creation') }}" class="btn btn-link">Ajouter un autre lieu</a>
+        </div>
+        <div>
+
         </div>
 
         <div class="col-md-12">
