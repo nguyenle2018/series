@@ -239,13 +239,11 @@ class SortieController extends AbstractController
     #[Route('/desistement/{id}', name: 'desistement', requirements: ['id' => '\d+'])]
     public function desistement(
         EntityManagerInterface $entityManager,
-        Request $request,
         SortieRepository $sortieRepository,
         int $id,
     ): Response {
         // Récupérer la sortie et le participant
         $sortie = $sortieRepository->find($id);
-
         //On prend l'utilisateur de la sortie
         $participant = $this->getUser();
 
@@ -264,16 +262,19 @@ class SortieController extends AbstractController
         }
 
         // Retirer le participant de la sortie
-        $sortie->removeParticipant($participant);
-        //Verifier aprés
-        $entityManager->persist($sortie);
-        $entityManager->flush();
+        if ($participant === $sortie->getOrganisateur()) {
+            $this->addFlash('error', 'Vous ne pouvez pas vous désinscrire d\'une sortie dont vous êtes l\'organisateur');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+        } else {
+            $sortie->removeParticipant($participant);
 
-        // Ajouter un message de succès
-        $this->addFlash('success', 'Vous avez été désinscrit de cette sortie avec succès.');
+            $entityManager->persist($sortie);
+            $entityManager->flush();
 
-        // Rediriger vers la page de détail de la sortie
-        return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+            $this->addFlash('success', 'Vous avez été désinscrit de cette sortie avec succès.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+        }
+
     }
 
 }
