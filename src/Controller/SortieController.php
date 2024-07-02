@@ -85,7 +85,24 @@ class SortieController extends AbstractController
         Request $request
     ): Response
     {
+        //Archiver les sorties
+        $sorties = $sortieRepository->findAll();
+            // Date limite pour considérer une sortie comme historisée (1 mois)
+        $dateLimiteHistorisation = new \DateTime();
+        $dateLimiteHistorisation->modify('-1 month');
 
+            // Parcourir toutes les sorties pour vérifier la date et mettre à jour l'état si nécessaire
+        foreach ($sorties as $sortie) {
+            if ($sortie->getDateHeureDebut() < $dateLimiteHistorisation && $sortie->getEtat()->getLibelle() !== 'Historisée') {
+                $etatHistorise = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Historisée']);
+                $sortie->setEtat($etatHistorise);
+                $entityManager->persist($sortie);
+               //dd($sorties);
+            }
+        }
+        $entityManager->flush();
+
+        //Filtre
         $qb = $sortieRepository->createQueryBuilder('s');
         $query = $qb->select('s');
 
@@ -168,10 +185,11 @@ class SortieController extends AbstractController
         // faire une variable pour vérifier si l'utilisateur est l'organisateur et passer le booléen à la vue
         // faire une variable pour vérifier si l'utilisateur est membre de la sortie et passer le booléen à la vue pour afficher le boutton
 
+        //dd($sorties);
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
-            'filterForm'=> $formSearchEvent
+            'filterForm'=> $formSearchEvent->createView()
         ]);
     }
 
@@ -272,7 +290,7 @@ class SortieController extends AbstractController
             return $this->render('sortie/annuler.html.twig', [
                 'sortie' => $sortie
             ]);
-            //return $this->redirectToRoute('sortie_annuler', ['id' => $sortie->getId()]);
+//            return $this->redirectToRoute('sortie_annuler', ['id' => $sortie->getId()]);
         }
         $this->addFlash('error', 'La sortie ne peut pas être annulée car elle a déjà commencé.');
 
@@ -288,7 +306,7 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         ParticipantRepository $participantRepository,
         int     $id,
-        int $idParticipant
+        int     $idParticipant = null
     ): Response
     {
         $sortie = $sortieRepository->find($id);

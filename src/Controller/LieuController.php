@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Lieu;
 use App\Entity\Ville;
 use App\Form\LieuType;
+use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -19,9 +21,11 @@ class LieuController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request,
-        SessionInterface $session
+        FormInterface $sortieForm
+
     ): Response
     {
+
         $lieuRepository = $entityManager->getRepository(Lieu::class);
         $villeRepository = $entityManager->getRepository(Ville::class);
         $lieu = new Lieu();
