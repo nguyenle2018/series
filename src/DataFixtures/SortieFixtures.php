@@ -36,17 +36,16 @@ class SortieFixtures extends Fixture
         $participants = $this->participant->findAll();
 
         $faker = Factory::create('fr_FR');
-        $dateDebut = new \DateTime();
-        $dateDebut->modify('+3 weeks');
+        $dateAujourdHui = new \DateTime();
+        $dateDebutSortie = new \DateTime();
+        $dateDebutSortie->modify('+ 3 weeks');
 
         for ($i = 0; $i < 15; $i++) {
             $sortie = new Sortie();
             $sortie->setNom("Sortie $i")
-                ->setDateHeureDebut($faker->dateTimeBetween('now', '+3 weeks'))
+                ->setDateHeureDebut($faker->dateTimeBetween($dateAujourdHui, $dateDebutSortie))
                 ->setDuree($faker->randomDigitNotNull());
-            $date = $sortie->getDateHeureDebut();
-            $date->modify('-2 weeks');
-            $sortie->setDateLimiteInscription($faker->dateTimeBetween($date, $sortie->getDateHeureDebut()))
+            $sortie->setDateLimiteInscription($faker->dateTimeBetween(('- 1 week'), $sortie->getDateHeureDebut()))
                 ->setNbInscriptionsMax($faker->randomDigitNotNull())
                 ->setCampus($faker->randomElement($campuses))
                 ->setOrganisateur($faker->randomElement($participants))
