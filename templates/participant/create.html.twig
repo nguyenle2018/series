@@ -3,9 +3,7 @@
 {% block body %}
     <div class="container mt-4 ">
         <h2 class="text-center mb-2">Mon profil</h2>
-        <div>
 
-        </div>
         <div class="m-auto shadow-lg p-3 mb-5 bg-white rounded w-50">
 
             {{ form_start(participantForm) }}
@@ -45,8 +43,8 @@
             </div>
 
             <div class="mb-3">
-                {{ form_label(participantForm.photo) }}
-                {{ form_widget(participantForm.photo, {'attr': {'class': 'form-control-file'}}) }}
+                {{ form_label(participantForm.photoFilename) }}
+                {{ form_widget(participantForm.photoFilename, {'attr': {'class': 'form-control-file'}}) }}
             </div>
 
             <button type="submit" class="btn btn-primary">Enregistrer</button>

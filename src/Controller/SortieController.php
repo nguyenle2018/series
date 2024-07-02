@@ -25,14 +25,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortieController extends AbstractController
 {
     #[Route('/create', name: 'create')]
-    public function create(EntityManagerInterface $entityManager, Request $request ): Response
+    public function create(EntityManagerInterface $entityManager, Request $request): Response
     {
         $sortie = new Sortie();
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 
-
         $sortieForm->handleRequest($request);
-
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
@@ -63,18 +62,12 @@ class SortieController extends AbstractController
 
         }
 
-
-
         return $this->render('sortie/sortie.html.twig', [
             'sortieForm' => $sortieForm->createView(),
             'sortie' => $sortie, // Passer la variable sortie à la vue Twig
 
         ]);
     }
-
-
-
-
 
     #[Route('/liste', name: 'liste')]
     public function getAll(
@@ -83,8 +76,6 @@ class SortieController extends AbstractController
         Request $request
     ): Response
     {
-
-        $campuses = $entityManager->getRepository(campus::class)->findAll();
 
         $qb = $sortieRepository->createQueryBuilder('s');
         $query = $qb->select('s');
@@ -109,15 +100,16 @@ class SortieController extends AbstractController
 
         // Filtre par les dates
         $dateDebut = $searchEvent->getStartDate();
-        $dateFin = $searchEvent->getEndDate();
-        if ($dateDebut && $dateFin == null){
-            $query->andWhere('s.dateHeureDebut >= :dateDebut');
-            $query->setParameter('dateDebut', $dateDebut);
+        if ($dateDebut === null) {
+            $dateDebut = new \DateTime();
+            $searchEvent->setStartDate($dateDebut);
         }
 
-        if ($dateFin && $dateDebut == null){
-            $query->andWhere('s.dateHeureDebut <= :dateFin');
-            $query->setParameter('dateDebut', $dateFin);
+        $dateFin = $searchEvent->getEndDate();
+        if ($dateFin === null) {
+            $dateReference = new \DateTime();
+            $dateFin = $dateReference->modify('+ 10 years');
+            $searchEvent->setEndDate($dateFin);
         }
 
         if ($dateFin && $dateDebut){
@@ -127,7 +119,7 @@ class SortieController extends AbstractController
         }
 
         if ($dateFin < $dateDebut){
-            $this->addFlash('error', 'La date de fin ne peut pas être inférieure à date/heure de début');
+            $this->addFlash('error', 'La date de fin ne peut pas être inférieure à la date de début');
         }
 
         //Filtrage pour les sorties dont je suis organisateur
@@ -155,14 +147,18 @@ class SortieController extends AbstractController
         }
 
         //Filtrage pour les sorties qui sont passées
-        $sortiesPassee = $searchEvent->getSortiesNonInscrits();
+        $sortiesPassee = $searchEvent->getSortiesPassees();
         if ($sortiesPassee){
-            $etat = 'Historisée';
+            $etat = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Terminée']);
             $query->andWhere('s.etat = :etat');
             $query->setParameter('etat', $etat);
         }
 
         $sorties = $query->getQuery()->getResult();
+
+        // faire une variable pour vérifier si l'utilisateur est l'organisateur et passer le booléen à la vue
+        // faire une variable pour vérifier si l'utilisateur est membre de la sortie et passer le booléen à la vue pour afficher le boutton
+
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
@@ -324,6 +320,8 @@ class SortieController extends AbstractController
     ): Response {
         // Récupérer la sortie et le participant
         $sortie = $sortieRepository->find($id);
+
+        //On prend l'utilisateur de la sortie
         $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
 
         // Vérifier si la sortie existe
@@ -331,19 +329,19 @@ class SortieController extends AbstractController
             throw $this->createNotFoundException('Sortie ou participant non trouvée.');
         }
 
-        // Vérifier si l'utilisateur courant est l'organisateur de la sortie
-        if ($participant === $sortie->getOrganisateur()) {
-            throw new AccessDeniedException("Vous ne pouvez pas vous désister car vous êtes l'organisateur de cette sortie.");
+        if (new \DateTime() >= $sortie->getDateHeureDebut()) {
+            $this->addFlash('error', 'Vous ne pouvez plus vous désister car l\'événement a déjà commencé.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
         }
-
-        // Vérifier si la date limite d'inscription est passée
         if (new \DateTime() >= $sortie->getDateLimiteInscription()) {
             $this->addFlash('error', 'Vous ne pouvez plus vous désister car la date limite d\'inscription est dépassé.');
             return $this->redirectToRoute('sortie_detail', ['id' => $id]);
         }
 
-        // Retirer le participant de la sortie et enregistrer en base de données
+        // Retirer le participant de la sortie
         $sortie->removeParticipant($participant);
+        //Verifier aprés
+        $entityManager->persist($sortie);
         $entityManager->flush();
 
         // Ajouter un message de succès
@@ -354,4 +352,3 @@ class SortieController extends AbstractController
     }
 
 }
-

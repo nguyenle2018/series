@@ -4,16 +4,22 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Form\models\SearchEvent;
+use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SearchEventType extends AbstractType
 {
+
+    public function _construct(CampusRepository $campusRepository) {
+
+    }
+
+
     public function buildForm(
         FormBuilderInterface $builder,
         array $options
@@ -21,39 +27,23 @@ class SearchEventType extends AbstractType
     {
         $builder
             ->add('campus', EntityType::class, [
-               'class' => Campus::class,
-                'choice_label' => 'nom'
+                'class' => Campus::class,
+                'choice_label' => 'nom',
+                'placeholder' => 'Choisir un campus',
             ])
             ->add('search')
-            ->add('startDate', DateType::class , [
-                'label' => 'Start Date :',
+            ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control']
+                'required' => false
             ])
             ->add('endDate', DateType::class, [
-                'label' => 'End Date :',
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control']
+                'required' => false
             ])
-            ->add('sortieOrganisateur', CheckboxType::class, [
-                'label' => 'Sortie Orgnisateur ',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('sortiesInscrits', CheckboxType::class, [
-                'label' => 'Sortie Inscrits ',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('sortiesNonInscrits', CheckboxType::class, [
-                'label' => 'Sortie Non Inscrits ',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('sortiesPassees', CheckboxType::class, [
-                'label' => 'Sortie Passees ',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Rechercher',
-            ])
+            ->add('sortieOrganisateur', CheckboxType::class)
+            ->add('sortiesInscrits', CheckboxType::class)
+            ->add('sortiesNonInscrits', CheckboxType::class)
+            ->add('sortiesPassees', CheckboxType::class)
         ;
     }
 

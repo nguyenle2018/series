@@ -15,6 +15,11 @@ class SearchEvent
     private ?bool $sortiesNonInscrits = null;
     private ?bool $sortiesPassees = null;
 
+    public function _construct() {
+        $this->startDate = new \DateTime();
+        $this->endDate = $this->getStartDate()->modify( '+ 3 months');
+    }
+
     public function getCampus(): ?Campus
     {
         return $this->campus;
