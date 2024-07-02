@@ -34,16 +34,13 @@ class SortieController extends AbstractController
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
-
-
-            $etat = $entityManager->getRepository(Etat::class)->find(53);
+            //associer l'état
+            $etat = $entityManager->getRepository(Etat::class)->findOneBy(115);
             $sortie->setEtat($etat);
-            //dd($participant);
 
             // Associer le participant à la sortie
             $participant = $this->getUser();
             $sortie->setOrganisateur($participant);
-
 
             $entityManager->persist($sortie);
             $entityManager->flush();
@@ -219,7 +216,7 @@ class SortieController extends AbstractController
         }
 
         // Vérifier que la sortie n'est pas déjà publiée
-        if ($sortie->getEtat() && $sortie->getEtat()->getId() === 53) {
+        if ($sortie->getEtat() && $sortie->getEtat()->getLibelle() === 'Ouverte') {
             $this->addFlash('warning', 'La sortie est déjà publiée.');
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
@@ -271,7 +268,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/inscription/{id}/{idParticipant}', name: 'inscription', requirements: ['id' => '\d+', 'idParticipants' => '\d+'])]
+    #[Route('/inscription/{id}', name: 'inscription', requirements: ['id' => '\d+'])]
     public function inscription(
         EntityManagerInterface $entityManager,
         Request $request,
@@ -282,7 +279,7 @@ class SortieController extends AbstractController
     ): Response
     {
         $sortie = $sortieRepository->find($id);
-        $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
+        $participant = $this->getUser();
 
         if(!$sortie || !$participant){
             throw $this->createNotFoundException('Sortie ou Participant non trouvée !!');
@@ -309,7 +306,7 @@ class SortieController extends AbstractController
 
     }
 
-    #[Route('/desistement/{id}/{idParticipant}', name: 'desistement', requirements: ['id' => '\d+', 'idParticipant' => '\d+'])]
+    #[Route('/desistement/{id}', name: 'desistement', requirements: ['id' => '\d+'])]
     public function desistement(
         EntityManagerInterface $entityManager,
         Request $request,
@@ -321,7 +318,7 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->find($id);
 
         //On prend l'utilisateur de la sortie
-        $participant = $entityManager->getRepository(Participant::class)->find($idParticipant);
+        $participant = $this->getUser();
 
         // Vérifier si la sortie existe
         if (!$sortie || !$participant) {

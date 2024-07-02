@@ -87,11 +87,8 @@
                         <td>{{ sortie.participants | filter( participant => participant.pseudo == app.user.pseudo) | join('X')}}</td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
-                            {% if sortie.etat.libelle != 'historisée' or sortie.etat.libelle != 'Créée' %}
-                                <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">Afficher</a>
-                            {% endif %}
 
-                            {% if sortie.organisateur.pseudo == app.user.pseudo %}
+                            {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Créée' %}
                                 <a href="{{ path('sortie_update', {'id': sortie.id})  }}" class="btn btn-secondary">Modifier</a>
                             {% endif %}
 
@@ -99,30 +96,25 @@
                                 <a href="{{ path('sortie_publier', {'id': sortie.id})  }}" class="btn btn-success">Publier</a>
                             {% endif %}
 
-        {#                    {% if sortie.organisateur.pseudo ==  app.user.pseudo#}
-        {#                        and ( sortie.etat.libelle == 'Créée' or sortie.etat.libelle != 'Ouverte' or sortie.etat.libelle != 'Cloturée' ) %}#}
-        {#                        <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}">Annuler</a>#}
-        {#                    {% endif %}#}
-                            <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}" class="btn btn-danger">Annuler</a>
+                            {% if sortie.etat.libelle == 'Créée' and sortie.organisateur.pseudo == app.user.pseudo %}
+                                <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">afficher</a>
+                            {% endif %}
 
-        {#                    {% if sortie.etat.libelle != 'Ouverte' and not (sortie.participants.contains(app.user.pseudo)) %}#}
-        {#                        #}{# autre option à tester pour vérifier si le participant est inscrit à la sortie :#}
-        {#                            and (filter( participant => participant.pseudo == app.user.pseudo)) is defined #}
-        {#                        <a href="{{ path('sortie_inscription', {'id': sortie.id, 'idParticipant': app.user.id })  }}">S'inscrire</a>#}
-        {#                    {% endif %}#}
-                            <a href="{{ path('sortie_inscription', {'id': sortie.id, 'idParticipant': app.user.id })  }}" class="btn btn-success">S'inscrire</a>
+                            {% if sortie.etat.libelle != 'Créée' %}
+                                <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">afficher</a>
+                            {% endif %}
 
+                            {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Ouverte' %}
+                                <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}" class="btn btn-danger">Annuler</a>
+                            {% endif %}
 
-                            {#                    {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and not (sortie.participants.contains(app.user.pseudo)) %}#}
-        {#                        #}{# autre option à tester pour vérifier si le participant est inscrit à la sortie :#}
-        {#                            and (filter( participant => participant.pseudo == app.user.pseudo)) is defined#}
-        {#                            and not (sortie.participants.contains(app.user.pseudo))#}
-        {#                            app.user.pseudo not in sortie.participants#}
-        {#                        #}
+                            {% if sortie.etat.libelle == 'Ouverte' and not (sortie.participants.contains(app.user.pseudo)) %}
+                                <a href="{{ path('sortie_inscription', {'id': sortie.id })  }}" class="btn btn-success">S'inscrire</a>
+                            {% endif %}
 
-        {#                        <a href="{{ path('sortie_desistement', {'id': sortie.id, 'idParticipant': app.user.id })  }}">Se désinscrire</a>#}
-        {#                    {% endif %}#}
-                            <a href="{{ path('sortie_desistement', {'id': sortie.id, 'idParticipant': app.user.id })  }}" class="btn btn-info">Se désinscrire</a>
+                            {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and (sortie.participants.contains(app.user.pseudo) and sortie.organisateur.pseudo != app.user.pseudo) %}
+                                <a href="{{ path('sortie_desistement', {'id': sortie.id })  }}" class="btn btn-info">Se désinscrire</a>
+                            {% endif %}
 
                         </td>
                     </tr>
@@ -135,15 +127,4 @@
     </div>
 
 
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        $(document).ready(function() {
-            // you may need to change this code if you are not using Bootstrap Datepicker
-            $('.js-datepicker').datepicker({
-                format: 'yyyy-mm-dd'
-            });
-        });
-    </script>
 {% endblock %}
