@@ -1,23 +1,12 @@
 <nav>
-
     <ul>
-        <li><a href="#">Villes</a></li>
-        <li><a href="#">Campus</a></li>
+{#        <li><a href="#">Villes</a></li>#}
+{#        <li><a href="#">Campus</a></li>#}
         <li><a href="{{ path('sortie_liste') }}">Accueil</a></li>
-        <li><a href="{{ path('participants_detail') }}">Mon profil</a></li>
-        <li><a href="{{ path('app_logout') }}">se déconnecter</a></li>
-
-        {#        instance de l'organistateur #}
-        {% if app.organisateur %}
-        <li><a href="{{ path('sortie_create') }}">Créer une sortie</a></li>
-        <li><a href="{{ path('sortie_update') }}">Modifier une sortie</a></li>
-        <li><a href="{{ path('sortie_annuler') }}">Annuler une sortie</a></li>
-        {% endif %}
-
-
-
-
-
+        <li><a href="{{ path('participants_detail', { 'id': app.user.id }) }}">Mon profil</a></li>
+        <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
+{#        <li><a href="{{ path('sortie_create') }}">Créer une sortie</a></li>#}
+        {#        <li><a href="{{ path('sortie_update', { 'id': sortie.id }) }}">Modifier la sortie {{ sortie.nom }}</a></li>#}
+{#        <li><a href="{{ path('sortie_annuler') }}">Annuler une sortie</a></li>#}
     </ul>
-
 </nav>

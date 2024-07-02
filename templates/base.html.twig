@@ -17,7 +17,7 @@
                         <img src="{{ asset('images/logo.png') }}"  alt=" Sortie ENI" class="img-fluid" style="max-width: 100px;">
                     </a>
                 </h1>
-{#                {% include 'menu/nav.html.twig' %}#}
+                {% include 'menu/nav.html.twig' %}
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="flash flash-{{ label }} mt-2 bg-info text-dark mt-2">

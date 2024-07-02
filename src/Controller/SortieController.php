@@ -11,7 +11,6 @@ use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
 use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
-use App\Services\Changer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -37,13 +36,13 @@ class SortieController extends AbstractController
 
 
 
-            $participant = $entityManager->getRepository(Participant::class)->find(196);
-            $etat = $entityManager->getRepository(Etat::class)->find(115);
+            $etat = $entityManager->getRepository(Etat::class)->find(53);
+            $sortie->setEtat($etat);
             //dd($participant);
 
             // Associer le participant à la sortie
+            $participant = $this->getUser();
             $sortie->setOrganisateur($participant);
-            $sortie->setEtat($etat);
 
 
             $entityManager->persist($sortie);
@@ -220,7 +219,7 @@ class SortieController extends AbstractController
         }
 
         // Vérifier que la sortie n'est pas déjà publiée
-        if ($sortie->getEtat() && $sortie->getEtat()->getId() === 116) {
+        if ($sortie->getEtat() && $sortie->getEtat()->getId() === 53) {
             $this->addFlash('warning', 'La sortie est déjà publiée.');
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
