@@ -10,7 +10,6 @@ use App\Form\SearchEventType;
 use App\Form\SortieType;
 use App\Service\SortieRecuperation;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,7 +63,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        return $this->render('sortie/sortie.html.twig', [
+        return $this->render('create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
             'sortie' => $sortie,
         ]);
@@ -72,18 +71,18 @@ class SortieController extends AbstractController
 
     #[Route('/liste', name: 'liste')]
     public function getAll(
-        EntityManagerInterface $entityManager,
         Request $request,
         SortieRecuperation $sortieRecuperation,
     ): Response
     {
         $searchEvent = new SearchEvent();
         $formSearchEvent = $this->createForm(SearchEventType::class, $searchEvent);
+
         $formSearchEvent->handleRequest($request);
 
         $user = $this->getUser();
 
-        $sorties = $sortieRecuperation->getAllSorties($searchEvent, $user);
+        $sorties = $sortieRecuperation->getAllSortiesAvecFiltres($searchEvent, $user);
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
@@ -115,11 +114,11 @@ class SortieController extends AbstractController
     }
     #[Route('/detail/{id}', name: 'detail', requirements: ['id' => '\d+'])]
     public function detail(
-        EntityManagerInterface $entityManager,
+        SortieRecuperation $sortieRecuperation,
         int     $id
     ): Response
     {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+        $sortie = $sortieRecuperation->getOneSortie($id);
 
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas.');
@@ -136,12 +135,12 @@ class SortieController extends AbstractController
     #[Route('/publier/{id}', name: 'publier', requirements: ['id' => '\d+'])]
     public function publier(
         EntityManagerInterface $entityManager,
-        SortieRepository $sortieRepository,
+        SortieRecuperation $sortieRecuperation,
         int $id
     ): Response
     {
         // Récupérer la sortie par son ID
-        $sortie = $sortieRepository->find($id);
+        $sortie = $sortieRecuperation->getOneSortie($id);
 
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas.');
@@ -167,13 +166,17 @@ class SortieController extends AbstractController
     #[Route('/annuler/{id}', name: 'annuler', requirements: ['id' => '\d+'])]
     public function annuler(
         EntityManagerInterface $entityManager,
-        SortieRepository $sortieRepository,
+        SortieRecuperation $sortieRecuperation,
         int     $id,
     ): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
-        $sortie = $sortieRepository->find($id);
+        $sortie = $sortieRecuperation->getOneSortie($id);
         $now = new \DateTime();
+
+        // Vérifier si l'on trouve bien la sortie en base de donnée
+        if (!$sortie) {
+            throw $this->createNotFoundException('La sortie n\'a pas été trouvé');
+        }
 
         // Vérifier si l'utilisateur est l'organisateur de la sortie
         if($sortie->getOrganisateur() !== $this->getUser() ) {
@@ -193,6 +196,8 @@ class SortieController extends AbstractController
         }
 
         $this->addFlash('error', 'La sortie ne peut pas être annulée car elle a déjà commencé.');
+
+        $sorties = $sortieRecuperation->getAllSortiesSansFiltres();
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties
         ]);
@@ -201,16 +206,21 @@ class SortieController extends AbstractController
     #[Route('/inscription/{id}', name: 'inscription', requirements: ['id' => '\d+'])]
     public function inscription(
         EntityManagerInterface $entityManager,
-        SortieRepository $sortieRepository,
+        SortieRecuperation $sortieRecuperation,
         int     $id,
     ): Response
     {
-        $sortie = $sortieRepository->find($id);
+        $sortie = $sortieRecuperation->getOneSortie($id);
         $participant = $this->getUser();
 
-        if(!$sortie || !$participant){
-            throw $this->createNotFoundException('Sortie ou Participant non trouvée !!');
+        if(!$sortie){
+            throw $this->createNotFoundException('La sortie n\'a pas été trouvé');
         }
+
+        if(!$participant){
+            $this->redirectToRoute('app_login');
+        }
+
         $now = new \DateTime();
 
         //vérifier des conditions
@@ -228,31 +238,35 @@ class SortieController extends AbstractController
         $sortie->addParticipant($participant);
         $entityManager->flush();
 
-
         return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
-
     }
 
     #[Route('/desistement/{id}', name: 'desistement', requirements: ['id' => '\d+'])]
     public function desistement(
         EntityManagerInterface $entityManager,
-        SortieRepository $sortieRepository,
+        SortieRecuperation $sortieRecuperation,
         int $id,
     ): Response {
         // Récupérer la sortie et le participant
-        $sortie = $sortieRepository->find($id);
+        $sortie = $sortieRecuperation->getOneSortie($id);
         //On prend l'utilisateur de la sortie
         $participant = $this->getUser();
 
         // Vérifier si la sortie existe
-        if (!$sortie || !$participant) {
-            throw $this->createNotFoundException('Sortie ou participant non trouvée.');
+        if(!$sortie){
+            throw $this->createNotFoundException('La sortie n\'a pas été trouvé');
+        }
+
+        // Vérifier si le user est logué
+        if(!$participant){
+            $this->redirectToRoute('app_login');
         }
 
         if (new \DateTime() >= $sortie->getDateHeureDebut()) {
             $this->addFlash('error', 'Vous ne pouvez plus vous désister car l\'événement a déjà commencé.');
             return $this->redirectToRoute('sortie_detail', ['id' => $id]);
         }
+
         if (new \DateTime() >= $sortie->getDateLimiteInscription()) {
             $this->addFlash('error', 'Vous ne pouvez plus vous désister car la date limite d\'inscription est dépassé.');
             return $this->redirectToRoute('sortie_detail', ['id' => $id]);
@@ -271,7 +285,6 @@ class SortieController extends AbstractController
             $this->addFlash('success', 'Vous avez été désinscrit de cette sortie avec succès.');
             return $this->redirectToRoute('sortie_detail', ['id' => $id]);
         }
-
     }
 
 }
