@@ -5,21 +5,38 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Modifier Sortie</h1>
+    <div class="container mt-5 shadow-lg p-3 mb-5 bg-white rounded w-50">
+        <h1 class="mt-4 text-center">Modifier Sortie</h1>
 
-    {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
+        {{ form_start(sortieForm, {'attr': {'class': 'mt-4'}}) }}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+{#                {{ form_widget(sortieForm, {'attr': {'class': 'mt-4'}}) }}#}
 
-    <div class="btn-group" role="group">
-        <button class="btn btn-primary" type="submit" name="action" value="save">Enregistrer</button>
-        <button class="btn btn-success" type="submit" name="action" value="publish">Publier la sortie</button>
-        <button class="btn btn-danger" type="submit" name="action" value="delete">Supprimer la sortie</button>
-        <a href="{{ path('sortie_liste') }}" class="btn btn-secondary">Annuler</a>
+                {{ form_row(sortieForm.nom, {'attr': {'class': 'form-control mb-3'}}) }}
+                {{ form_row(sortieForm.dateHeureDebut, {'attr': {'class': 'form-control mb-3'}}) }}
+                {{ form_row(sortieForm.duree, {'attr': {'class': 'form-control mb-3'}}) }}
+                {{ form_row(sortieForm.dateLimiteInscription, {'attr': {'class': 'form-control mb-3'}}) }}
+                {{ form_row(sortieForm.nbInscriptionsMax, {'attr': {'class': 'form-control mb-3'}}) }}
+                {{ form_row(sortieForm.infosSortie, {'attr': {'class': 'form-control mb-3'}}) }}
+                {{ form_row(sortieForm.campus, {'attr': {'class': 'form-select mb-3'}}) }}
+                {{ form_row(sortieForm.lieu, {'attr': {'class': 'form-select mb-3'}}) }}
+
+            </div>
+        </div>
+
+
+        <div class="btn-group" role="group">
+{#            <button class="btn btn-primary" type="submit" name="action" value="save">Enregistrer</button>#}
+{#            <button class="btn btn-success" type="submit" name="action" value="publish">Publier la sortie</button>#}
+            <button class="btn btn-danger" type="submit" name="action" value="delete">Supprimer la sortie</button>
+            <a href="{{ path('sortie_liste') }}" class="btn btn-secondary mx-2">Annuler</a>
+        </div>
+
+        {{ form_end(sortieForm) }}
+
+        {#  <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-secondary mt-3">Retour aux détails</a>#}
     </div>
-
-    {{ form_end(sortieForm) }}
-
-    {#  <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-secondary mt-3">Retour aux détails</a>#}
 {% endblock %}
 
 

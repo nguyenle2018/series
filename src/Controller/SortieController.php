@@ -60,7 +60,8 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatOuverte);
             }
 
-            $entityManager->persist($sortie);
+            //enregistrement de la liste des sorties :
+            $entityManager->persist($lieuDeLaSortieEnBase);
             $entityManager->flush();
 
             $this->addFlash('success', 'Sortie créée avec succès !');
@@ -161,6 +162,7 @@ class SortieController extends AbstractController
         $etatOuverte = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
         $sortie->setEtat($etatOuverte);
 
+        $entityManager->persist($sortie);
         $entityManager->flush();
 
         $this->addFlash('success', 'La sortie a été publiée avec succès.');
