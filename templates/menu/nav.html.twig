@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -8,11 +8,11 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {#        <li><a href="#">Villes</a></li>#}
         {#        <li><a href="#">Campus</a></li>#}
-                <li class="nav-item"><a class="nav-link" href="{{ path('sortie_liste') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ path('participants_detail', { 'id': app.user.id }) }}">Mon profil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                <li class="nav-item"><a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('sortie_liste') }}">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('participants_detail', { 'id': app.user.id }) }}">Mon profil</a></li>
+                <li class="nav-item"><a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('app_logout') }}">Se déconnecter</a></li>
         {#        <li><a href="{{ path('sortie_create') }}">Créer une sortie</a></li>#}
-                {#        <li><a href="{{ path('sortie_update', { 'id': sortie.id }) }}">Modifier la sortie {{ sortie.nom }}</a></li>#}
+                {#  <li><a href="{{ path('sortie_update', { 'id': sortie.id }) }}">Modifier la sortie {{ sortie.nom }}</a></li>#}
         {#        <li><a href="{{ path('sortie_annuler') }}">Annuler une sortie</a></li>#}
             </ul>
         </div>

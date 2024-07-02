@@ -35,6 +35,7 @@ class SortieController extends AbstractController
             $participant = $this->getUser();
             $sortie->setOrganisateur($participant);
             $sortie->addParticipant($participant);
+            $entityManager->persist($sortie);
 
             //ajout de la sortie à la liste des sorties du lieu
             $lieuDeLaSortieEnBase = $entityManager->getRepository(Lieu::class)->find($sortie->getLieu());
@@ -99,6 +100,8 @@ class SortieController extends AbstractController
     {
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+
+
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $entityManager->flush();
@@ -278,6 +281,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_detail', ['id' => $id]);
         } else {
             $sortie->removeParticipant($participant);
+
 
             $entityManager->persist($sortie);
             $entityManager->flush();
