@@ -21,7 +21,7 @@ class LieuController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request,
-        FormInterface $sortieForm
+
 
     ): Response
     {
@@ -31,7 +31,7 @@ class LieuController extends AbstractController
         $lieu = new Lieu();
 
         $lieuForm = $this->createForm(LieuType::class, $lieu);
-        $lieuForm =$lieuForm->handleRequest($request);
+        $lieuForm->handleRequest($request);
 
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()){
@@ -63,7 +63,7 @@ class LieuController extends AbstractController
         }
 
         return $this->render('lieu/index.html.twig', [
-            'lieuForm' => $lieuForm
+            'lieuForm' => $lieuForm->createView()
         ]);
     }
 }

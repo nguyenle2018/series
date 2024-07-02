@@ -36,6 +36,7 @@ class SortieController extends AbstractController
             $participant = $this->getUser();
             $sortie->setOrganisateur($participant);
             $sortie->addParticipant($participant);
+            $entityManager->persist($sortie);
 
             //ajout de la sortie à la liste des sorties du lieu
             $lieuDeLaSortieEnBase = $entityManager->getRepository(Lieu::class)->find($sortie->getLieu());
