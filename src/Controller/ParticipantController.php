@@ -16,13 +16,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/participants', name: 'participants_')]
 class ParticipantController extends AbstractController
 {
-    #[Route('/create', name: 'create')]
-    #[Route('/update/{id}', name: 'update')]
-    public function create(
+    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'])]
+    public function update(
         ParticipantRepository   $participantRepository,
         EntityManagerInterface  $entityManager,
         Request                 $request,
-        Participant             $participant,
+//        Participant             $participant,
         FileUpLoader            $fileUploader,
         int                    $id = null
     ): Response
@@ -30,7 +29,17 @@ class ParticipantController extends AbstractController
         //créer une instance de l'entité
         $participant = new Participant();
 
-        //creation du formulaire associé à l'instance de serie
+        // Récupérer le participant à partir de l'ID
+        $participant = $participantRepository->find($id);
+
+        // Vérifier si l'utilisateur connecté est bien le propriétaire du profil
+        $user = $this->getUser();
+        if (!$user || $participant->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à modifier ce profil.');
+        }
+
+
+        //creation du formulaire associé à l'instance de sortie
         $participantForm = $this->createForm(ParticipantType::class, $participant);
 
         //extraie des informations de la requête HTTP
@@ -69,8 +78,5 @@ class ParticipantController extends AbstractController
 
         ]);
     }
-
-
-
 
 }
