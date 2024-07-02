@@ -35,7 +35,7 @@ class SortieController extends AbstractController
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
             //associer l'état
-            $etat = $entityManager->getRepository(Etat::class)->findOneBy(115);
+            $etat = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
             $sortie->setEtat($etat);
 
             // Associer le participant à la sortie
@@ -48,6 +48,19 @@ class SortieController extends AbstractController
             //ajout de la sortie à la liste des sorties du lieu
             $lieuDeLaSortieEnBase = $entityManager->getRepository(Lieu::class)->find($sortie->getLieu());
             $lieuDeLaSortieEnBase->addSorty($sortie);
+
+            if ($sortieForm->get('enregistrer')->isClicked())
+            {
+                $etatCree = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Créée']);
+                $sortie->setEtat($etatCree);
+            }
+
+            if ($sortieForm->get('publier')->isClicked())
+            {
+                $etatOuverte = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
+                $sortie->setEtat($etatOuverte);
+            }
+
             //enregistrement de la liste des sorties :
             $entityManager->persist($lieuDeLaSortieEnBase);
             $entityManager->flush();

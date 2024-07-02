@@ -64,6 +64,14 @@ class SortieType extends AbstractType
             ->add('infosSortie', TextType::class, [
                 'label' => 'Informations sur la sortie :',
                 'attr' => ['class' => 'form-control']
+            ])
+            ->add('enregistrer', SubmitType::class, [
+                'label' => 'Enregistrer',
+                'attr' => ['class' => 'btn btn-primary mt-2']
+            ])
+            ->add('publier', SubmitType::class, [
+                'label' => 'Publier la sortie',
+                'attr' => ['class' => 'btn btn-success mt-2']
             ]);
 
     }
