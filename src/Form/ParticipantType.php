@@ -63,13 +63,13 @@ class ParticipantType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
             ])
 
-            // Add file upload field for profile picture
-            ->add('photo', FileType::class, [
+            // Ajouter un champ de téléchargement de fichier pour la photo de profil
+            ->add('photoFilename', FileType::class, [
             'label' => 'Ma photo',
-            'required' => false, // Allow the field to be empty
-            'mapped' => false, // This field is not mapped to a property of Participant entity
+            'required' => false,
+            'mapped' => false,
             'attr' => [
-                'accept' => 'image/*', // Only accept image files
+                'accept' => '.jpg,.png', // Only accept image files
                 ],
             ]);
     }
