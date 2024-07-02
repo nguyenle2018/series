@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/lieu', name: 'lieu_')]
@@ -17,7 +18,8 @@ class LieuController extends AbstractController
     #[Route('/create', name: 'creation')]
     public function create(
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        SessionInterface $session
     ): Response
     {
         $lieuRepository = $entityManager->getRepository(Lieu::class);
@@ -51,7 +53,9 @@ class LieuController extends AbstractController
             $entityManager->persist($lieu);
             $entityManager->flush();
             $this->addFlash('success', 'Le lieu a été ajouté en base de donnée avec succès');
-            return $this->redirectToRoute('lieu_creation');
+
+
+            return $this->redirectToRoute('sortie_create');
         }
 
         return $this->render('lieu/index.html.twig', [

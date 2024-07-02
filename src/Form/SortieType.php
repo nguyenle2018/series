@@ -10,8 +10,10 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SortieType extends AbstractType
@@ -23,20 +25,38 @@ class SortieType extends AbstractType
                 'label' => 'Nom :',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('dateHeureDebut', DateTimeType::class, [
-                'label' => 'Date et heure de début :',
-                'widget' => 'single_text',
+
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
+                'choice_label' => 'nom',
+                'label' => 'Campus :',
                 'attr' => ['class' => 'form-control']
             ])
+
+            ->add('lieu', EntityType::class, [
+                'class' => Lieu::class,
+                'choice_label' => 'nom',
+                'label' => 'Lieu :',
+                'attr' => ['class' => 'form-control']
+            ])
+
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée (en minutes) :',
                 'attr' => ['class' => 'form-control']
             ])
+
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'label' => 'Date limite d\'inscription :',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control']
             ])
+
+            ->add('dateHeureDebut', DateTimeType::class, [
+                'label' => 'Date et heure de début :',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
+            ])
+
             ->add('nbInscriptionsMax', IntegerType::class, [
                 'label' => 'Nombre maximum d\'inscriptions :',
                 'attr' => ['class' => 'form-control']
@@ -44,19 +64,8 @@ class SortieType extends AbstractType
             ->add('infosSortie', TextType::class, [
                 'label' => 'Informations sur la sortie :',
                 'attr' => ['class' => 'form-control']
-            ])
-            ->add('campus', EntityType::class, [
-                'class' => Campus::class,
-                'choice_label' => 'nom',
-                'label' => 'Campus :',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('lieu', EntityType::class, [
-                'class' => Lieu::class,
-                'choice_label' => 'nom',
-                'label' => 'Lieu :',
-                'attr' => ['class' => 'form-control']
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
