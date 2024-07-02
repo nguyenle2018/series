@@ -288,7 +288,6 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         ParticipantRepository $participantRepository,
         int     $id,
-        int $idParticipant
     ): Response
     {
         $sortie = $sortieRepository->find($id);
@@ -325,7 +324,6 @@ class SortieController extends AbstractController
         Request $request,
         SortieRepository $sortieRepository,
         int $id,
-        int $idParticipant
     ): Response {
         // Récupérer la sortie et le participant
         $sortie = $sortieRepository->find($id);

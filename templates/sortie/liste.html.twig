@@ -85,9 +85,9 @@
                         <td>{{ sortie.participants | length }} / {{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
                         <td>
-                            {% if sortie.participants.contains(app.user.pseudo) %}
+                            {% for p in sortie.participants|filter(p => p.pseudo == app.user.pseudo) %}
                                 X
-                            {% endif %}
+                            {% endfor %}
                         </td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
@@ -112,11 +112,11 @@
                                 <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}" class="btn btn-danger">Annuler</a>
                             {% endif %}
 
-                            {% if sortie.etat.libelle == 'Ouverte' and not (sortie.participants.contains(app.user.pseudo)) %}
+                            {% if sortie.etat.libelle == 'Ouverte' and (not sortie.participants.contains(app.user)) %}
                                 <a href="{{ path('sortie_inscription', {'id': sortie.id })  }}" class="btn btn-success">S'inscrire</a>
                             {% endif %}
 
-                            {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and (sortie.participants.contains(app.user.pseudo) and sortie.organisateur.pseudo != app.user.pseudo) %}
+                            {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and (sortie.participants.contains(app.user) and sortie.organisateur.pseudo != app.user.pseudo) %}
                                 <a href="{{ path('sortie_desistement', {'id': sortie.id })  }}" class="btn btn-info">Se désinscrire</a>
                             {% endif %}
 
