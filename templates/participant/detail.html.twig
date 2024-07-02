@@ -8,8 +8,11 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-3">
-                <img src="{{ asset('images/' ~ participant.photoFilename) }}" width="100"
-                     alt="{{ participant.nom }} ">
+                {% if participant.photoFilename %}
+                    <img src="{{ asset('images/' ~ participant.photoFilename) }}" width="120" alt="{{ participant.nom }} ">
+                {% else %}
+                    <img src="{{ asset('images/default-photo.jpg') }}" width="100" alt="Profil par défaut">
+                {% endif %}
             </div>
             <div class="col-md-3">
                 <div class="mb-2"><strong>Prénom :</strong></div>
