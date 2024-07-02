@@ -84,7 +84,11 @@
                         <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
                         <td>{{ sortie.participants | length }} / {{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>{{ sortie.participants | filter( participant => participant.pseudo == app.user.pseudo) | join('X')}}</td>
+                        <td>
+                            {% if sortie.participants.contains(app.user.pseudo) %}
+                                X
+                            {% endif %}
+                        </td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
 
