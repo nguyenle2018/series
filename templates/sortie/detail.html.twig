@@ -39,16 +39,16 @@
                     <thead>
                     <tr>
                         <th>Pseudo</th>
-                        <th>Prénom</th>
-                        <th>Nom</th>
+                        <th>Nom Prénom</th>
+                        <th>Détail</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for participant in sortie.participants %}
                         <tr>
                             <td>{{ participant.pseudo }}</td>
-                            <td>{{ participant.prenom }}</td>
-                            <td>{{ participant.nom }}</td>
+                            <td>{{ participant.nom }} {{ participant.prenom }}</td>
+                            <td><a href="{{ path('participants_detail', {'id' : participant.id} ) }}">Profile</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

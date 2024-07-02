@@ -18,27 +18,21 @@
                     </a>
                 </h1>
                 {% include 'menu/nav.html.twig' %}
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="flash flash-{{ label }} mt-2 bg-info text-dark mt-2">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endfor %}
+
                 <div class="text-end">
                     <h4>Date du jour : {{ "now" | date('d/m/Y')}}</h4>
-{#                    <h4>Participant : {{ participant.prenom }}  {{ participant.nom }}</h4>#}
+                    <h4>Participant : {{ app.user.prenom }}  {{ app.user.nom }}</h4>
                 </div>
              </header>
 
 
             {# Afficher les messages flash #}
             {% for label, messages in app.flashes %}
-                <div class="alert alert-{{ label }} mt-2 ">
-                    {% for message in messages %}
-                        <p>{{ message }}</p>
-                    {% endfor %}
-                </div>
+                {% for message in messages %}
+                    <div class="flash flash-{{ label }} mt-2 bg-info text-dark mt-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endfor %}
 
             <main class="mt-4">
@@ -46,7 +40,7 @@
 
                 {% endblock %}
             </main>
-            <footer class="text-center py-3 mt-4>
+            <footer class="text-center py-3 mt-4">
 
                 <div>@Copyright - Group 5  -  {{ "now" | date ('Y') }}</div>
             </footer>
