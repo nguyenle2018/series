@@ -2,21 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Campus;
 use App\Entity\Etat;
 use App\Entity\Lieu;
-use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
 use App\Form\SortieType;
-use App\Repository\ParticipantRepository;
 use App\Service\SortieRecuperation;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SortieRepository;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
