@@ -60,11 +60,10 @@ class SortieController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Sortie créée avec succès !');
-
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        return $this->render('create.html.twig', [
+        return $this->render('sortie/create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
             'sortie' => $sortie,
         ]);
@@ -101,8 +100,6 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-
-
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $entityManager->flush();
 
@@ -115,6 +112,8 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
         ]);
     }
+
+
     #[Route('/detail/{id}', name: 'detail', requirements: ['id' => '\d+'])]
     public function detail(
         SortieRecuperation $sortieRecuperation,

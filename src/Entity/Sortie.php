@@ -29,6 +29,10 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'La date et heure de début sont requises.')]
+    #[Assert\Length(
+        min: 1,
+        minMessage: 'La durée d\'une sortie ne peut être inférieure ou égale à 0',
+    )]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -37,6 +41,10 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Le nombre maximum d\'inscriptions est requis.')]
+    #[Assert\Length(
+        min: 2,
+        minMessage: 'Une sortie est composé d\'au moins 2 participants',
+    )]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 1000)]

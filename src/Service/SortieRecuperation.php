@@ -56,7 +56,7 @@ class SortieRecuperation
         $sortieRecherchee = $sortieRepository->find($id);
 
         //On vérifie si son statut est historisée
-        if ($sortieRecherchee && $sortieRecherchee->getEtat() === $this->etatHistorise){
+        if (!$sortieRecherchee && $sortieRecherchee->getEtat() == $this->etatHistorise){
             //Si sa sortie est historisée, on renvoie null pour générer une erreur générique
             // et ainsi ne pas donner d'information sur le fait que les sorties sont historisées
             return null;
