@@ -67,7 +67,16 @@
             {% endif %}
 
             <a href="{{ path('sortie_liste') }}" class="btn btn-primary">Retour à la liste</a>
+
+            {% if sortie.organisateur.pseudo ==  app.user.pseudo and sortie.etat.libelle == 'Créée' %}
+                <a href="{{ path('sortie_publier', {'id': sortie.id})  }}" class="btn btn-success">Publier</a>
+            {% endif %}
+            {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Créée' %}
+                <a href="{{ path('sortie_update', {'id': sortie.id})  }}" class="btn btn-secondary">Modifier</a>
+            {% endif %}
         </div>
+
+
 
     </div>
 {% endblock %}
