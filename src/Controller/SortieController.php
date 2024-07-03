@@ -7,7 +7,9 @@ use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
+use App\Form\SortieAnnulationType;
 use App\Form\SortieType;
+use App\Repository\SortieRepository;
 use App\Service\SortieRecuperation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,10 +38,24 @@ class SortieController extends AbstractController
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
+
+
             // Associer le participant à la sortie
             $participant = $this->getUser();
             $sortie->setOrganisateur($participant);
             $sortie->addParticipant($participant);
+
+            //vérification de la taille du champs infoSortie
+            $infoSortie = $sortie->getInfosSortie();
+            if (strlen($infoSortie) > 800) {
+                $tailleContenu = strlen($infoSortie);
+                $this->addFlash('error', 'Le champs "Informations sur la sortie" ne peut dépasser 800 caractères. Le champs contient actuellement '. $tailleContenu . 'caractères');
+                return $this->render('sortie/create.html.twig', [
+                    'sortieForm' => $sortieForm->createView(),
+                    'sortie' => $sortie,
+                ]);
+            }
+
             $entityManager->persist($sortie);
 
             //ajout de la sortie à la liste des sorties du lieu
@@ -65,7 +81,6 @@ class SortieController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Sortie créée avec succès !');
-
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
@@ -85,9 +100,7 @@ class SortieController extends AbstractController
         $formSearchEvent = $this->createForm(SearchEventType::class, $searchEvent);
 
         $formSearchEvent->handleRequest($request);
-
         $user = $this->getUser();
-
         $sorties = $sortieRecuperation->getAllSortiesAvecFiltres($searchEvent, $user);
 
         return $this->render('sortie/liste.html.twig', [
@@ -100,14 +113,12 @@ class SortieController extends AbstractController
     public function update(
         Sortie $sortie,
         EntityManagerInterface $entityManager,
-        Request $request,
-        Security $security
-
+        Request $request
     ): Response
     {
 
         // Vérifier si l'utilisateur connecté est l'organisateur de la sortie
-        $user = $security->getUser();
+        $user = $this->getUser();
         if ($sortie->getOrganisateur() !== $user) {
             throw new AccessDeniedHttpException('Vous n\'êtes pas autorisé à modifier cette sortie.');
         }
@@ -129,6 +140,8 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
         ]);
     }
+
+
     #[Route('/detail/{id}', name: 'detail', requirements: ['id' => '\d+'])]
     public function detail(
         SortieRecuperation $sortieRecuperation,
@@ -182,11 +195,13 @@ class SortieController extends AbstractController
 
     #[Route('/annuler/{id}', name: 'annuler', requirements: ['id' => '\d+'])]
     public function annuler(
-        EntityManagerInterface $entityManager,
+        Request $request,
         SortieRecuperation $sortieRecuperation,
+        EntityManagerInterface $entityManager,
         int     $id,
     ): Response
     {
+
         $sortie = $sortieRecuperation->getOneSortie($id);
         $now = new \DateTime();
 
@@ -195,28 +210,51 @@ class SortieController extends AbstractController
             throw $this->createNotFoundException('La sortie n\'a pas été trouvé');
         }
 
+        $sortieAnnulationForm = $this->createForm(SortieAnnulationType::class);
+        $sortieAnnulationForm->handleRequest($request);
+
         // Vérifier si l'utilisateur est l'organisateur de la sortie
         if($sortie->getOrganisateur() !== $this->getUser() ) {
             throw $this->createNotFoundException('Vous n\'êtes pas autorisé à annuler cette sortie.');
         }
 
-        // Vérifier si la sortie n'a pas encore commencé
-        if($sortie->getDateHeureDebut() > $now ) {
-            $sortie->setEtat($entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']));
+        if ($sortieAnnulationForm->isSubmitted() && $sortieAnnulationForm->isValid()) {
 
+            $etatAnnulee = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
+
+            // Vérifier si la sortie n'a pas encore commencé
+            if($sortie->getDateHeureDebut() < $now ) {
+                $this->addFlash('error', 'La sortie ne peut pas être annulée car elle a déjà commencé.');
+
+                return $this->render('sortie/annuler.html.twig', [
+                    'sortie' => $sortie
+                ]);
+            }
+
+            // Vérifier si la sortie n'est pas déjà annulée
+            if ($sortie->getEtat() == $etatAnnulee) {
+                $this->addFlash('error', 'La sortie est déjà annulée.');
+                return $this->redirectToRoute('sortie_liste');
+            }
+
+            // changement de l'info de la sortie
+            $motifAnnulation = " Annulée : " . $sortieAnnulationForm->getData()['description'];
+            $informationSortieActuelle = $sortie->getInfosSortie();
+            $sortie->setInfosSortie($informationSortieActuelle . $motifAnnulation);
+
+            //changement etat
+            $sortie->setEtat($etatAnnulee);
+
+            $entityManager->persist($sortie);
             $entityManager->flush();
 
             $this->addFlash('success', 'La sortie a été annulée avec succès.');
-            return $this->render('sortie/annuler.html.twig', [
-                'sortie' => $sortie
-            ]);
+            return $this->redirectToRoute('sortie_liste');
         }
 
-        $this->addFlash('error', 'La sortie ne peut pas être annulée car elle a déjà commencé.');
-
-        $sorties = $sortieRecuperation->getAllSortiesSansFiltres();
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sorties
+        return $this->render('sortie/annuler.html.twig', [
+            'sortie' => $sortie,
+            'sortieAnnulationForm' => $sortieAnnulationForm
         ]);
     }
 
@@ -241,21 +279,26 @@ class SortieController extends AbstractController
         $now = new \DateTime();
 
         //vérifier des conditions
-        if ($sortie->getEtat()->getLibelle() !== 'Ouverte' ||
-            $sortie->getDateLimiteInscription() <= $now ||
-            count($sortie->getParticipants()) >= $sortie->getNbInscriptionsMax()
-        ) {
-            // Gérer ici le cas où les conditions d'inscription ne sont pas remplies
-            $this->addFlash('error', 'Vous ne pouvez pas vous inscrire à cette sortie car elle a été annulé ou à déjà commencer.');
-
-            return $this->redirectToRoute('sortie_liste');
+        if ($sortie->getEtat()->getLibelle() !== 'Ouverte'){
+            $this->addFlash('error', 'La sortie n\'est pas encore ouverte.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        if ($sortie->getDateLimiteInscription() < $now) {
+            $this->addFlash('error', 'La date limite d\'inscription est dépassée.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        if (count($sortie->getParticipants()) >= $sortie->getNbInscriptionsMax()) {
+            $this->addFlash('error', 'Il n\'y a plus de places disponibles pour cette sortie.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        else{
+            // Ajouter le participant à la sortie
+            $sortie->addParticipant($participant);
+            $entityManager->flush();
+            $this->addFlash('success', 'Vous avez été inscrit de cette sortie avec succès !');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        // Ajouter le participant à la sortie
-        $sortie->addParticipant($participant);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 
     #[Route('/desistement/{id}', name: 'desistement', requirements: ['id' => '\d+'])]

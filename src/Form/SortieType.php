@@ -42,7 +42,10 @@ class SortieType extends AbstractType
 
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée (en minutes) :',
-                'attr' => ['class' => 'form-control']
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 1,
+                ]
             ])
 
             ->add('dateLimiteInscription', DateTimeType::class, [
@@ -59,7 +62,10 @@ class SortieType extends AbstractType
 
             ->add('nbInscriptionsMax', IntegerType::class, [
                 'label' => 'Nombre maximum d\'inscriptions :',
-                'attr' => ['class' => 'form-control']
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 1,
+                ]
             ])
             ->add('infosSortie', TextType::class, [
                 'label' => 'Informations sur la sortie :',
@@ -67,7 +73,7 @@ class SortieType extends AbstractType
             ])
             ->add('enregistrer', SubmitType::class, [
                 'label' => 'Enregistrer',
-                'attr' => ['class' => 'btn btn-primary mt-2']
+                'attr' => ['class' => 'btn btn-primary mt-2 mx-2']
             ])
             ->add('publier', SubmitType::class, [
                 'label' => 'Publier la sortie',

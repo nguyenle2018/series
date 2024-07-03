@@ -44,9 +44,9 @@ class SortieFixtures extends Fixture
             $sortie = new Sortie();
             $sortie->setNom("Sortie $i")
                 ->setDateHeureDebut($faker->dateTimeBetween($dateAujourdHui, $dateDebutSortie))
-                ->setDuree($faker->randomDigitNotNull());
+                ->setDuree($faker->numberBetween($min = 1, $max = 300));
             $sortie->setDateLimiteInscription($faker->dateTimeBetween(('- 1 week'), $sortie->getDateHeureDebut()))
-                ->setNbInscriptionsMax($faker->randomDigitNotNull())
+                ->setNbInscriptionsMax($faker->numberBetween(2, 5))
                 ->setCampus($faker->randomElement($campuses))
                 ->setOrganisateur($faker->randomElement($participants))
                 ->setEtat($faker->randomElement($etats))

@@ -19,7 +19,6 @@ class SearchEventType extends AbstractType
 
     }
 
-
     public function buildForm(
         FormBuilderInterface $builder,
         array $options

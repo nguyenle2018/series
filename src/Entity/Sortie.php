@@ -29,6 +29,10 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'La date et heure de début sont requises.')]
+    #[Assert\Length(
+        min: 1,
+        minMessage: 'La durée d\'une sortie ne peut être inférieure ou égale à 0',
+    )]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -37,11 +41,15 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Le nombre maximum d\'inscriptions est requis.')]
+    #[Assert\Length(
+        min: 1,
+        minMessage: 'Le nombre maximum d\'inscription doit être supérieur à 1',
+    )]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 1000)]
     #[Assert\NotBlank(message: 'Les informations sur la sortie sont requises.')]
-    #[Assert\Length(max: 1000, maxMessage: 'Les informations ne peuvent pas dépasser {{ limit }} caractères.')]
+    #[Assert\Length(max: 800, maxMessage: 'Les informations ne peuvent pas dépasser {{ limit }} caractères.')]
     private ?string $infosSortie = null;
 
     /**
