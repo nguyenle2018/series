@@ -64,7 +64,7 @@ class SortieType extends AbstractType
                 'label' => 'Nombre maximum d\'inscriptions :',
                 'attr' => [
                     'class' => 'form-control',
-                    'min' => 2,
+                    'min' => 1,
                 ]
             ])
             ->add('infosSortie', TextType::class, [
