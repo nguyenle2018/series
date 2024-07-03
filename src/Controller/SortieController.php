@@ -9,6 +9,7 @@ use App\Form\models\SearchEvent;
 use App\Form\SearchEventType;
 use App\Form\SortieAnnulationType;
 use App\Form\SortieType;
+use App\Repository\SortieRepository;
 use App\Service\SortieRecuperation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +32,8 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+
 
             // Associer le participant à la sortie
             $participant = $this->getUser();
@@ -92,9 +95,7 @@ class SortieController extends AbstractController
         $formSearchEvent = $this->createForm(SearchEventType::class, $searchEvent);
 
         $formSearchEvent->handleRequest($request);
-
         $user = $this->getUser();
-
         $sorties = $sortieRecuperation->getAllSortiesAvecFiltres($searchEvent, $user);
 
         return $this->render('sortie/liste.html.twig', [
@@ -264,21 +265,26 @@ class SortieController extends AbstractController
         $now = new \DateTime();
 
         //vérifier des conditions
-        if ($sortie->getEtat()->getLibelle() !== 'Ouverte' ||
-            $sortie->getDateLimiteInscription() <= $now ||
-            count($sortie->getParticipants()) >= $sortie->getNbInscriptionsMax()
-        ) {
-            // Gérer ici le cas où les conditions d'inscription ne sont pas remplies
-            $this->addFlash('error', 'Vous ne pouvez pas vous inscrire à cette sortie car elle a été annulé ou à déjà commencer.');
-
-            return $this->redirectToRoute('sortie_liste');
+        if ($sortie->getEtat()->getLibelle() !== 'Ouverte'){
+            $this->addFlash('error', 'La sortie n\'est pas encore ouverte.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        if ($sortie->getDateLimiteInscription() < $now) {
+            $this->addFlash('error', 'La date limite d\'inscription est dépassée.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        if (count($sortie->getParticipants()) >= $sortie->getNbInscriptionsMax()) {
+            $this->addFlash('error', 'Il n\'y a plus de places disponibles pour cette sortie.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        else{
+            // Ajouter le participant à la sortie
+            $sortie->addParticipant($participant);
+            $entityManager->flush();
+            $this->addFlash('success', 'Vous avez été inscrit de cette sortie avec succès !');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        // Ajouter le participant à la sortie
-        $sortie->addParticipant($participant);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 
     #[Route('/desistement/{id}', name: 'desistement', requirements: ['id' => '\d+'])]
