@@ -57,7 +57,7 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-//        $this->changementEtatEncours();
+        $this->changementEtatEncours();
 
         $sortieRepository = $this->sortieRepository;
         $sorties = $sortieRepository->findAll();
@@ -150,7 +150,11 @@ class SortieRecuperation
             $query->setParameter('etat', $etat);
         }
 
-        return $query->getQuery()->getResult();
+        $sorties = $query->getQuery()->getResult();
+
+        dump($sorties);
+
+        return $sorties;
     }
 
     public function changementEtatHistorise()
@@ -189,75 +193,30 @@ class SortieRecuperation
         foreach ($sorties as $index => $sortie) {
 
             $dateHeureDebut = $sortie->getDateHeureDebut();
-//            if ($index == 0) {
-//                echo("1) dateheuredebut" . $dateHeureDebut->format('Y-m-d H:i:s') . " \n" . "<br>");
-//            }
             $dureeEnMinute = $sortie->getDuree();
             $dateBuffer = clone $sortie->getDateHeureDebut();
             $dateHeureFin = date_modify($dateBuffer, '+' . $dureeEnMinute . ' minutes');
 
-
-            if ($index == 47) {
-                echo("date de début: " . $dateHeureDebut->format('Y-m-d H:i:s') . "\n");
-                echo("now: " . $now->format('Y-m-d H:i:s') . "\n");
-                echo("date de début < now " . ($now > $dateHeureDebut? "true" : "false"));
-            }
-
-
-//            if ($index == 0) {
-//                echo("2) dateheurefin" . $dateHeureFin->format('Y-m-d H:i:s') . " \n" . "<br>");
-//                echo("3) dateheuredebut" . $dateHeureDebut->format('Y-m-d H:i:s') . " \n" . "<br>");
-//            }
-//            $dateHeureFin = (clone $dateHeureDebut)->modify('+' . $dureeEnMinute . ' minutes');
-
-//            $resultDateFin = $dateHeureFin->format('Y-m-d H:i:s');
-//            echo($resultDateFin);
-
-//            $isNowSuperiorToDateDebut = ($dateHeureDebut < $now);
-
-//            if ($index == 0) {
-//                echo("4) isNowSuperiorToDateDebut " . $isNowSuperiorToDateDebut . " \n" . "<br>");
-//            }
+//            if ($index == 5) {
+//                echo("Date now timezone " . $now->getTimezone()->getName() . "<br>");
+//                echo("Date début timezone " . $dateHeureDebut->getTimezone()->getName() . "<br>");
+//                echo("Durée " . $dureeEnMinute . "<br>");
+//                echo("Date buffer timezone " . $dateBuffer->getTimezone()->getName() . "<br>");
+//                echo("Date fin timezone " . $dateHeureFin->getTimezone()->getName() . "<br>");
 //
-//            $isNowInferiorToDateFin = ($now < $dateHeureFin);
-//
-//            if ($index == 0) {
-//                echo("5) isNowInferiorToDateFin " . $isNowInferiorToDateFin . " \n" . "<br>");
+//                echo("Date début " . $dateHeureDebut->format('Y-m-d H:i:s') . "<br>");
+//                echo("Date now " . $now->format('Y-m-d H:i:s') . "<br>");
+//                echo("Date fin " . $dateHeureFin->format('Y-m-d H:i:s') . "<br>");
+//                echo("date début < date now " . ($dateHeureDebut < $now) . "<br>");
+//                echo("date now < date début " . ($now < $dateHeureFin) . "<br>");
 //            }
 
-//            $resultat = 0;
-//            if ($dateHeureDebut < $now) {
-//                $resultat = 1;
-//            }
-//
-//            $resultatDeux = 0;
-//            if ($now < $dateHeureFin) {
-//                $resultatDeux = 1;
-//            }
-
-//            if ($index == 47) {
-////                echo "isNowSuperiorToDateDebut=[".$isNowSuperiorToDateDebut."]";
-//
-//                echo("now ". $now->format('Y-m-d H:i:s'). "\n");
-//                echo("date debut ". $dateHeureDebut->format('Y-m-d H:i:s'). "\n");
-//                echo("date fin ". $dateHeureFin->format('Y-m-d H:i:s'). "\n");
-//
-//                echo "Test résultat (dateHeureDebut < now)=[".$resultat.")". "\n";
-//                echo "Test résultat (now < dateHeureFin))=[".$resultatDeux."]". "\n";
-//                echo("6) double condition " . ($isNowSuperiorToDateDebut && $isNowInferiorToDateFin) . "\n" . "<br>");
-//            }
-
-//            echo($isNowSuperiorToDateDebut && $isNowInferiorToDateFin);
-
-            if (($now > $dateHeureDebut ) && ($now < $dateHeureFin)) {
-//                if ($index == 45) {
-//                    echo('7) test' . "\n" . "<br>");
-//                }
-
+            if (($dateHeureDebut < $now) && ($now < $dateHeureFin)) {
                 $sortie->setEtat($etatEnCours);
                 $this->entityManager->persist($sortie);
             }
         }
+
         $this->entityManager->flush();
 
         return null;
