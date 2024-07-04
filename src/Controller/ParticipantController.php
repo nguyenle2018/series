@@ -26,8 +26,6 @@ class ParticipantController extends AbstractController
         int                    $id = null
     ): Response
     {
-        //créer une instance de l'entité
-        $participant = new Participant();
 
         // Récupérer le participant à partir de l'ID
         $participant = $participantRepository->find($id);
@@ -50,8 +48,10 @@ class ParticipantController extends AbstractController
             $participant->setActif(true);
 
             $file = $participantForm->get('photoFilename')->getData();
-            $newFilename = $fileUploader->upload($file, $this->getParameter('participant_photoFilename_directory'), $participant->getNom());
-            $participant->setPhotoFilename($newFilename);
+            if ($file) {
+                $newFilename = $fileUploader->upload($file, $this->getParameter('participant_photoFilename_directory'), $participant->getNom());
+                $participant->setPhotoFilename($newFilename);
+            }
 
             $entityManager->persist($participant);
             $entityManager->flush();
