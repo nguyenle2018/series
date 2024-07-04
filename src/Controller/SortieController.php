@@ -344,6 +344,11 @@ class SortieController extends AbstractController
         } else {
             $sortie->removeParticipant($participant);
 
+            // test de si le desistement doit changer l'état de la sortie à ouverte si il reste de la place
+            if ($sortie->getParticipants()->count() < $sortie->getNbInscriptionsMax()) {
+                $etatOuvert = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
+                $sortie->setEtat($etatOuvert);
+            }
 
             $entityManager->persist($sortie);
             $entityManager->flush();

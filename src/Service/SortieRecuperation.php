@@ -30,11 +30,14 @@ class SortieRecuperation
         //On essaie de récupérer une sortie
         $sortieRepository = $this->sortieRepository;
 
-        //On vérifie d'abord si des sorties doivent avoir leurs statuts changées à 'Historisée'
-        $this->changementEtatHistorise();
+        //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'cloturée'
+        $this->changementEtatCloturee();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-//        $this->changementEtatEncours();
+        $this->changementEtatEncours();
+
+        // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
+        $this->changementEtatHistorise();
 
         //On essaie de récupérer la sortie en question
         $sortieRecherchee = $sortieRepository->find($id);
@@ -55,11 +58,15 @@ class SortieRecuperation
 
     )
     {
-        // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
-        $this->changementEtatHistorise();
+
+        //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'cloturée'
+        $this->changementEtatCloturee();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
         $this->changementEtatEncours();
+
+        // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
+        $this->changementEtatHistorise();
 
         $sortieRepository = $this->sortieRepository;
         $sorties = $sortieRepository->findAll();
@@ -74,11 +81,14 @@ class SortieRecuperation
 
         $sortieRepository = $this->sortieRepository;
 
-        // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
-        $this->changementEtatHistorise();
+        //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'cloturée'
+        $this->changementEtatCloturee();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
         $this->changementEtatEncours();
+
+        // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
+        $this->changementEtatHistorise();
 
         $qb = $sortieRepository->createQueryBuilder('s');
         $query = $qb->select('s')
@@ -184,29 +194,52 @@ class SortieRecuperation
         $now = new \DateTime('now', new DateTimeZone('Europe/Paris'));
 
         // Parcourir toutes les sorties pour vérifier la date et mettre à jour l'état si nécessaire
-        foreach ($sorties as $index => $sortie) {
+        foreach ($sorties as $sortie) {
 
             $dateHeureDebut = $sortie->getDateHeureDebut();
             $dureeEnMinute = $sortie->getDuree();
             $dateBuffer = clone $sortie->getDateHeureDebut();
             $dateHeureFin = date_modify($dateBuffer, '+' . $dureeEnMinute . ' minutes');
 
-//            if ($index == 5) {
-//                echo("Date now timezone " . $now->getTimezone()->getName() . "<br>");
-//                echo("Date début timezone " . $dateHeureDebut->getTimezone()->getName() . "<br>");
-//                echo("Durée " . $dureeEnMinute . "<br>");
-//                echo("Date buffer timezone " . $dateBuffer->getTimezone()->getName() . "<br>");
-//                echo("Date fin timezone " . $dateHeureFin->getTimezone()->getName() . "<br>");
-//
-//                echo("Date début " . $dateHeureDebut->format('Y-m-d H:i:s') . "<br>");
-//                echo("Date now " . $now->format('Y-m-d H:i:s') . "<br>");
-//                echo("Date fin " . $dateHeureFin->format('Y-m-d H:i:s') . "<br>");
-//                echo("date début < date now " . ($dateHeureDebut < $now) . "<br>");
-//                echo("date now < date début " . ($now < $dateHeureFin) . "<br>");
-//            }
 
             if (($dateHeureDebut < $now) && ($now < $dateHeureFin)) {
                 $sortie->setEtat($etatEnCours);
+                $this->entityManager->persist($sortie);
+            }
+        }
+
+        $this->entityManager->flush();
+
+        return null;
+    }
+
+    public function changementEtatCloturee()
+    {
+        // Cette fonction scanne la bdd afin de changer l'état d'une sortie à activité en cours quand l'activité est cloturee
+        // cad que le nombre max de participant est atteint
+        // ou/et que la date date du jour est supérieure à la date de fin d'inscription
+
+        $sorties = $this->sortieRepository->findAll();
+        $etatEnCours = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
+        $etatCloturee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Cloturée']);
+        $now = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+
+        // Parcourir toutes les sorties pour vérifier la date et mettre à jour l'état si nécessaire
+        foreach ($sorties as $sortie) {
+
+            $dateLimiteInscription = $sortie->getDateLimiteInscription();
+
+            if($sortie->getEtat() == $etatEnCours) {
+                break;
+            }
+
+            if ($now > $dateLimiteInscription) {
+                $sortie->setEtat($etatCloturee);
+                $this->entityManager->persist($sortie);
+            }
+
+            if ($sortie->getParticipants()->count() >= $sortie->getNbInscriptionsMax()) {
+                $sortie->setEtat($etatCloturee);
                 $this->entityManager->persist($sortie);
             }
         }
