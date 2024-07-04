@@ -234,7 +234,7 @@ class Sortie
     public function validateDates(ExecutionContextInterface $context): void
     {
         if ($this->dateHeureDebut <= $this->dateLimiteInscription) {
-            $context->buildViolation('La date et heure de début doit être strictement supérieur à la date limite d\'inscription.')
+            $context->buildViolation('La date et heure de début doit être strictement supérieure à la date limite d\'inscription.')
                 ->atPath('dateHeureDebut')
                 ->addViolation();
         }

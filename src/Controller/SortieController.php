@@ -13,9 +13,14 @@ use App\Repository\SortieRepository;
 use App\Service\SortieRecuperation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+
+
 
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
@@ -111,8 +116,17 @@ class SortieController extends AbstractController
         Request $request
     ): Response
     {
+
+        // Vérifier si l'utilisateur connecté est l'organisateur de la sortie
+        $user = $this->getUser();
+        if ($sortie->getOrganisateur() !== $user) {
+            throw new AccessDeniedHttpException('Vous n\'êtes pas autorisé à modifier cette sortie.');
+        }
+
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $entityManager->flush();

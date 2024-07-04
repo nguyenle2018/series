@@ -63,7 +63,9 @@
 
         <div class="mt-4">
             {% if sortie.dateHeureDebut > 'now'|date %}
+                {% if sortie.organisateur != app.user %}
                 <a href="{{ path('sortie_desistement', {'id': sortie.id, 'idParticipant': app.user.id}) }}" class="btn btn-danger">Se désister</a>
+                {% endif %}
             {% endif %}
 
             <a href="{{ path('sortie_liste') }}" class="btn btn-primary">Retour à la liste</a>
