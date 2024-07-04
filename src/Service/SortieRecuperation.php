@@ -267,6 +267,8 @@ class SortieRecuperation
 
         $sorties = $this->sortieRepository->findAll();
 
+//        dump($sorties);
+
         $etatAnnulee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
         $etatHistorisee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Historisée']);
         $etatTerminee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Terminée']);
@@ -274,19 +276,13 @@ class SortieRecuperation
         $now = new \DateTime('now', new DateTimeZone('Europe/Paris'));
 
         // Parcourir toutes les sorties pour vérifier la date et mettre à jour l'état si nécessaire
-        foreach ($sorties as $sortie) {
+        foreach ($sorties as $index => $sortie) {
 
             $dureeEnMinute = $sortie->getDuree();
             $dateBuffer = $sortie->getDateHeureDebut();
             $dateHeureFin = date_modify($dateBuffer, '+' . $dureeEnMinute . ' minutes');
 
-            if ($sortie->getEtat() == $etatAnnulee || $sortie->getEtat() == $etatHistorisee) {
-                dump('tombe dans le check des états');
-                break;
-            }
-
-            if ($now > $dateHeureFin) {
-                dump('tombe dans le check de la date');
+            if ($now > $dateHeureFin && $sortie->getEtat() != $etatAnnulee && $sortie->getEtat() != $etatHistorisee) {
                 $sortie->setEtat($etatTerminee);
                 $this->entityManager->persist($sortie);
             }
