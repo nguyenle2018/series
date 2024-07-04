@@ -196,7 +196,6 @@ class SortieRecuperation
             $dateBuffer = clone $sortie->getDateHeureDebut();
             $dateHeureFin = date_modify($dateBuffer, '+' . $dureeEnMinute . ' minutes');
 
-            dd($dateBuffer);
 
             if ($index == 47) {
                 echo("date de début: " . $dateHeureDebut->format('Y-m-d H:i:s') . "\n");
