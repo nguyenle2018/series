@@ -5,5 +5,8 @@ body {
 li{
     color: red;
     font-size: 12px;
-
+}
+div.flash.flash-error {
+    background: #B0413E !important;
+    color:white !important;
 }
