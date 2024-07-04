@@ -80,6 +80,7 @@ class SortieType extends AbstractType
                 'attr' => ['class' => 'btn btn-success mt-2 mx-2']
             ]);
 
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
