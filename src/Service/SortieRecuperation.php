@@ -262,12 +262,8 @@ class SortieRecuperation
 
     public function changementEtatTerminee()
     {
-        // Cette fonction scanne la bdd afin de changer l'état d'une sortie à terminee
-        // cad lorsque l'activitée et passée et non annulée
 
         $sorties = $this->sortieRepository->findAll();
-
-//        dump($sorties);
 
         $etatAnnulee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
         $etatHistorisee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Historisée']);
