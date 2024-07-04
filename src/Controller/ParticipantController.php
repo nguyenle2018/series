@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 
@@ -21,7 +22,7 @@ class ParticipantController extends AbstractController
         ParticipantRepository   $participantRepository,
         EntityManagerInterface  $entityManager,
         Request                 $request,
-//        Participant             $participant,
+        UserPasswordHasherInterface $userPasswordHasher,
         FileUpLoader            $fileUploader,
         int                    $id = null
     ): Response
@@ -46,6 +47,9 @@ class ParticipantController extends AbstractController
         if($participantForm->isSubmitted() && $participantForm->isValid()){
 
             $participant->setActif(true);
+
+            $plainPassword = $participant->getPassword();
+            $participant->setPassword($userPasswordHasher->hashPassword($participant,$plainPassword));
 
             $file = $participantForm->get('photoFilename')->getData();
             if ($file) {
