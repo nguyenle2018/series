@@ -6,6 +6,7 @@ use App\Entity\Etat;
 use App\Form\models\SearchEvent;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
