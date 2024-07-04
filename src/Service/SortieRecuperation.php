@@ -2,9 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\Etat;
 use App\Form\models\SearchEvent;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -30,7 +32,7 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-        $this->changementEtatEncours();
+//        $this->changementEtatEncours();
 
         //On essaie de récupérer la sortie en question
         $sortieRecherchee = $sortieRepository->find($id);
@@ -55,7 +57,7 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-        $this->changementEtatEncours();
+//        $this->changementEtatEncours();
 
         $sortieRepository = $this->sortieRepository;
         $sorties = $sortieRepository->findAll();
@@ -193,6 +195,8 @@ class SortieRecuperation
             $dureeEnMinute = $sortie->getDuree();
             $dateBuffer = clone $sortie->getDateHeureDebut();
             $dateHeureFin = date_modify($dateBuffer, '+' . $dureeEnMinute . ' minutes');
+
+            dd($dateBuffer);
 
             if ($index == 47) {
                 echo("date de début: " . $dateHeureDebut->format('Y-m-d H:i:s') . "\n");
