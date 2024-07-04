@@ -7,9 +7,21 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                <li class="nav-item"><a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('sortie_liste') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('participants_detail', { 'id': app.user.id }) }}">Mon profil</a></li>
-                <li class="nav-item"><a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('sortie_liste') }}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('app_login') }}">Login</a>
+                    </li>
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('participants_detail', { 'id': app.user.id }) }}">Mon profil</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-primary link-info mx-4 fs-5" href="{{ path('app_logout') }}">Se déconnecter</a>
+                        </li>
+                    {% endif %}
 
             </ul>
         </div>

@@ -110,7 +110,8 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
-            'filterForm'=> $formSearchEvent
+            'filterForm'=> $formSearchEvent,
+            'controller_name' => 'BlogController'
         ]);
     }
 

@@ -65,69 +65,69 @@
 
         <table class="table table-striped mt-4">
             <thead>
-                <tr>
-                    <th>Nom de la sortie</th>
-                    <th>Date de la sortie</th>
-                    <th>Date clôture inscriptions</th>
-                    <th>inscrits/places</th>
-                    <th>Etat</th>
-                    <th>Inscrit</th>
-                    <th>Organisateur</th>
-                    <th>Actions</th>
-                </tr>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Date clôture inscriptions</th>
+                <th>inscrits/places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
             </thead>
             <tbody>
-                {% for sortie in sorties %}
-                    <tr>
-                        <td>{{ sortie.nom }}</td>
-                        <td>{{ sortie.dateHeureDebut | date('d-m-Y H:i')}}</td>
-                        <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
-                        <td>{{ sortie.participants | length }} / {{ sortie.nbInscriptionsMax }}</td>
-                        <td>{{ sortie.etat.libelle }}</td>
-                        <td>
-                            {% for p in sortie.participants|filter(p => p.pseudo == app.user.pseudo) %}
-                                X
-                            {% endfor %}
-                        </td>
-                        <td>{{ sortie.organisateur.pseudo }}</td>
-                        <td>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut | date('d-m-Y H:i')}}</td>
+                    <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
+                    <td>{{ sortie.participants | length }} / {{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>
+                        {% for p in sortie.participants|filter(p => p.pseudo == app.user.pseudo) %}
+                            X
+                        {% endfor %}
+                    </td>
+                    <td>{{ sortie.organisateur.pseudo }}</td>
+                    <td>
 
-                            {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Créée' %}
-                                <a href="{{ path('sortie_update', {'id': sortie.id})  }}" class="btn btn-secondary">Modifier</a>
-                            {% endif %}
+                        {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Créée' %}
+                            <a href="{{ path('sortie_update', {'id': sortie.id})  }}" class="btn btn-secondary">Modifier</a>
+                        {% endif %}
 
-                            {% if sortie.organisateur.pseudo ==  app.user.pseudo and sortie.etat.libelle == 'Créée' %}
-                                <a href="{{ path('sortie_publier', {'id': sortie.id})  }}" class="btn btn-success">Publier</a>
-                            {% endif %}
+                        {% if sortie.organisateur.pseudo ==  app.user.pseudo and sortie.etat.libelle == 'Créée' %}
+                            <a href="{{ path('sortie_publier', {'id': sortie.id})  }}" class="btn btn-success">Publier</a>
+                        {% endif %}
 
-                            {% if sortie.etat.libelle == 'Créée' and sortie.organisateur.pseudo == app.user.pseudo %}
-                                <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">afficher</a>
-                            {% endif %}
+                        {% if sortie.etat.libelle == 'Créée' and sortie.organisateur.pseudo == app.user.pseudo %}
+                            <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">afficher</a>
+                        {% endif %}
 
-                            {% if sortie.etat.libelle != 'Créée' %}
-                                <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">afficher</a>
-                            {% endif %}
+                        {% if sortie.etat.libelle != 'Créée' %}
+                            <a href="{{ path('sortie_detail', {'id': sortie.id})  }}" class="btn btn-primary">afficher</a>
+                        {% endif %}
 
-                            {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Ouverte' %}
-                                <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}" class="btn btn-danger">Annuler</a>
-                            {% endif %}
+                        {% if sortie.organisateur.pseudo == app.user.pseudo and sortie.etat.libelle == 'Ouverte' %}
+                            <a href="{{ path('sortie_annuler', {'id': sortie.id})  }}" class="btn btn-danger">Annuler</a>
+                        {% endif %}
 
-                            {% if sortie.etat.libelle == 'Ouverte' and (not sortie.participants.contains(app.user)) %}
-                                <a href="{{ path('sortie_inscription', {'id': sortie.id })  }}" class="btn btn-success">S'inscrire</a>
-                            {% endif %}
+                        {% if sortie.etat.libelle == 'Ouverte' and (not sortie.participants.contains(app.user)) %}
+                            <a href="{{ path('sortie_inscription', {'id': sortie.id })  }}" class="btn btn-success">S'inscrire</a>
+                        {% endif %}
 
-                            {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and (sortie.participants.contains(app.user) and sortie.organisateur.pseudo != app.user.pseudo) %}
-                                <a href="{{ path('sortie_desistement', {'id': sortie.id })  }}" class="btn btn-info">Se désinscrire</a>
-                            {% endif %}
+                        {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and (sortie.participants.contains(app.user) and sortie.organisateur.pseudo != app.user.pseudo) %}
+                            <a href="{{ path('sortie_desistement', {'id': sortie.id })  }}" class="btn btn-info">Se désinscrire</a>
+                        {% endif %}
 
-                        </td>
-                    </tr>
-                {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
-            <div class="mt-4">
-                <a href="{{ path('sortie_create') }}" class="btn btn-primary">Créer une sortie</a>
-            </div>
+        <div class="mt-4">
+            <a href="{{ path('sortie_create') }}" class="btn btn-primary">Créer une sortie</a>
+        </div>
     </div>
 
 

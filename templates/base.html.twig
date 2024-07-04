@@ -27,8 +27,11 @@
         </header>
 
         <div class="container text-end">
+
                 <h5>Date du jour : {{ "now" | date('d/m/Y')}}</h5>
+            {% if app.user %}
                 <h5>Participant : {{ app.user.prenom }}  {{ app.user.nom }}</h5>
+            {% endif %}
         </div>
 
 
@@ -38,8 +41,7 @@
                     <div class="flash flash-{{ label }} mt-2 bg-info text-dark mt-2 p-5">
                         {{ message }}
                     </div>
-                {% endfor %}
-            {% endfor %}
+                {% endfor %}            {% endfor %}
 
             <main class="container mt-4">
                 {% block body %}
