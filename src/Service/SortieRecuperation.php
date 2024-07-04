@@ -30,7 +30,7 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-        $this->changementEtatEncours();
+//        $this->changementEtatEncours();
 
         //On essaie de récupérer la sortie en question
         $sortieRecherchee = $sortieRepository->find($id);
@@ -55,7 +55,7 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-        $this->changementEtatEncours();
+//        $this->changementEtatEncours();
 
         $sortieRepository = $this->sortieRepository;
         $sorties = $sortieRepository->findAll();
@@ -73,7 +73,7 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
-        $this->changementEtatEncours();
+//        $this->changementEtatEncours();
 
         $qb = $sortieRepository->createQueryBuilder('s');
         $query = $qb->select('s')
