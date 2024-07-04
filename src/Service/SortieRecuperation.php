@@ -101,8 +101,8 @@ class SortieRecuperation
 
         $qb = $sortieRepository->createQueryBuilder('s');
         $query = $qb->select('s')
-            ->andWhere('s.etat != :etat')
-            ->setParameter('etat', $this->etatHistorise);
+            ->andWhere('s.etat != :etatHistorise')
+            ->setParameter('etatHistorise', $this->etatHistorise);
 
         // Filtre par campus
         $campus = $searchEvent->getCampus();
@@ -143,31 +143,35 @@ class SortieRecuperation
             $query->setParameter('participant', $organisateur);
         }
 
-        //Filtrage pour les sorties dont je suis inscrit
+        //Verification si le filtre 'pour les sorties dont je suis inscrit' est actif
         $inscrit = $searchEvent->getSortiesInscrits();
-        if ($inscrit) {
-            $query->andWhere(':participant MEMBER OF s.participants');
-            $query->setParameter('participant', $user);
-        }
-
-        //Filtrage pour les sorties dont je ne suis pas inscrit
+        //Verification si le filtre 'pour les sorties dont je ne suis pas inscrit' est actif
         $nonInscrit = $searchEvent->getSortiesNonInscrits();
-        if ($nonInscrit) {
-            $query->andWhere(':participant NOT MEMBER OF s.participants');
-            $query->setParameter('participant', $user);
+        //Si les deux filtres sont actifs, on ne fait rien
+        if ($inscrit && $nonInscrit) {
+
+        } else { //Si l'un des deux filtres est actif, on trie
+
+            if ($inscrit) {
+                $query->andWhere(':participant MEMBER OF s.participants');
+                $query->setParameter('participant', $user);
+            }
+
+            if ($nonInscrit) {
+                $query->andWhere(':participant NOT MEMBER OF s.participants');
+                $query->setParameter('participant', $user);
+            }
         }
 
         //Filtrage pour les sorties qui sont passées
         $sortiesPassee = $searchEvent->getSortiesPassees();
         if ($sortiesPassee) {
-            $etat = $this->etatRepository->findOneBy(['libelle' => 'Terminée']);
+            $etat = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Terminée']);
             $query->andWhere('s.etat = :etat');
             $query->setParameter('etat', $etat);
         }
 
-        $sorties = $query->getQuery()->getResult();
-
-        return $sorties;
+        return $query->getQuery()->getResult();
     }
 
     public function changementEtatHistorise()
