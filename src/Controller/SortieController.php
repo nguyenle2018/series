@@ -90,6 +90,7 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/', name:'default-sortie-controller-url')]
     #[Route('/liste', name: 'liste')]
     public function getAll(
         Request $request,
