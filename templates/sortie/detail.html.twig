@@ -64,11 +64,13 @@
     <div class="row justify-content-center mt-4">
         <div class="col-md-6 text-center">
             {% if app.user %}
-                {% if app.user == sortie.organisateur %}
+                {% if app.user == sortie.organisateur and sortie.etat.libelle == 'Créée'%}
                     <a href="{{ path('sortie_update', {'id': sortie.id }) }}" class="btn btn-primary">Modifier</a>
-                {% elseif sortie.participants.contains(app.user) %}
+                {% endif %}
+                {% if (sortie.etat.libelle == 'Ouverte' or sortie.etat.libelle == 'Cloturée') and (sortie.participants.contains(app.user) and sortie.organisateur.pseudo != app.user.pseudo) %}
                     <a href="{{ path('sortie_desistement', {'id': sortie.id, 'idParticipant': app.user.id}) }}" class="btn btn-danger">Se désister</a>
-                {% else %}
+                {% endif %}
+                {% if sortie.etat.libelle == 'Ouverte' and (not sortie.participants.contains(app.user)) %}
                     <a href="{{ path('sortie_inscription', {'id': sortie.id }) }}" class="btn btn-primary">S'inscrire</a>
                 {% endif %}
             {% endif %}
