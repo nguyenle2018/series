@@ -36,6 +36,9 @@ class SortieRecuperation
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
         $this->changementEtatEncours();
 
+        //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Cloturée'
+        $this->changementEtatTerminee();
+
         // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
         $this->changementEtatHistorise();
 
@@ -65,6 +68,9 @@ class SortieRecuperation
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
         $this->changementEtatEncours();
 
+        //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Cloturée'
+        $this->changementEtatTerminee();
+
         // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
         $this->changementEtatHistorise();
 
@@ -86,6 +92,9 @@ class SortieRecuperation
 
         //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Activité en cours'
         $this->changementEtatEncours();
+
+        //On vérifie d'abord si des sorties doivent avoir leurs status changées à 'Cloturée'
+        $this->changementEtatTerminee();
 
         // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
         $this->changementEtatHistorise();
@@ -189,6 +198,7 @@ class SortieRecuperation
         // Cette fonction scanne la bdd afin de changer l'état d'une sortie à activité en cours quand l'activité est en cours
 
         $sorties = $this->sortieRepository->findAll();
+
         $etatEnCours = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
 
         $now = new \DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -215,11 +225,12 @@ class SortieRecuperation
 
     public function changementEtatCloturee()
     {
-        // Cette fonction scanne la bdd afin de changer l'état d'une sortie à activité en cours quand l'activité est cloturee
+        // Cette fonction scanne la bdd afin de changer l'état d'une sortie à cloturee
         // cad que le nombre max de participant est atteint
         // ou/et que la date date du jour est supérieure à la date de fin d'inscription
 
         $sorties = $this->sortieRepository->findAll();
+
         $etatEnCours = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
         $etatCloturee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Cloturée']);
         $now = new \DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -240,6 +251,43 @@ class SortieRecuperation
 
             if ($sortie->getParticipants()->count() >= $sortie->getNbInscriptionsMax()) {
                 $sortie->setEtat($etatCloturee);
+                $this->entityManager->persist($sortie);
+            }
+        }
+
+        $this->entityManager->flush();
+
+        return null;
+    }
+
+    public function changementEtatTerminee()
+    {
+        // Cette fonction scanne la bdd afin de changer l'état d'une sortie à terminee
+        // cad lorsque l'activitée et passée et non annulée
+
+        $sorties = $this->sortieRepository->findAll();
+
+        $etatAnnulee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
+        $etatHistorisee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Historisée']);
+        $etatTerminee = $this->entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Terminée']);
+
+        $now = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+
+        // Parcourir toutes les sorties pour vérifier la date et mettre à jour l'état si nécessaire
+        foreach ($sorties as $sortie) {
+
+            $dureeEnMinute = $sortie->getDuree();
+            $dateBuffer = $sortie->getDateHeureDebut();
+            $dateHeureFin = date_modify($dateBuffer, '+' . $dureeEnMinute . ' minutes');
+
+            if ($sortie->getEtat() == $etatAnnulee || $sortie->getEtat() == $etatHistorisee) {
+                dump('tombe dans le check des états');
+                break;
+            }
+
+            if ($now > $dateHeureFin) {
+                dump('tombe dans le check de la date');
+                $sortie->setEtat($etatTerminee);
                 $this->entityManager->persist($sortie);
             }
         }
