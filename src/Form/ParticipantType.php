@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 class ParticipantType extends AbstractType
 {
@@ -65,12 +66,21 @@ class ParticipantType extends AbstractType
 
             // Ajouter un champ de téléchargement de fichier pour la photo de profil
             ->add('photoFilename', FileType::class, [
-            'label' => 'Ma photo',
-            'required' => false,
-            'mapped' => false,
+                'label' => 'Ma photo',
+                'required' => false,
+                'mapped' => false,
+                'constraints' => [
+                    new Image(
+                        [
+                            'maxSize' => '10000k',
+                            'mimeTypesMessage' => 'Image format is not allowed',
+                            'maxSizeMessage' => 'The file is too large !'
+                        ]
+                    )
+                ],
             'attr' => [
                 'accept' => '.jpg,.png', // Only accept image files
-                ],
+                ]
             ]);
     }
 

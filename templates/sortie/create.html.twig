@@ -1,4 +1,4 @@
- {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Création d'une sortie{% endblock %}
 
@@ -7,24 +7,28 @@
     <div class="container mt-5 shadow-lg p-3 mb-5 bg-white rounded w-50">
         {{ form_start(sortieForm, {'attr': {'class': 'row g-3'}}) }}
 
-        <div class="col-md-12">
-            {{ form_widget(sortieForm) }}
+         <div class="col-md-12 ">
+            {{ form_row(sortieForm.nom, {'attr': {'class': 'form-control mb-3'}}) }}
+            {{ form_row(sortieForm.campus, {'attr': {'class': 'form-control mb-3'}}) }}
+            {{ form_row(sortieForm.lieu, {'attr': {'class': 'form-control mb-3'}}) }}
+            {{ form_row(sortieForm.duree, {'attr': {'class': 'form-control mb-3', 'min': 1}}) }}
+             {{ form_row(sortieForm.dateLimiteInscription, {'attr': {'class': 'form-control mb-3'}}) }}
+            {{ form_row(sortieForm.dateHeureDebut, {'attr': {'class': 'form-control mb-3'}}) }}
+            {{ form_row(sortieForm.nbInscriptionsMax, {'attr': {'class': 'form-control mb-3', 'min': 1}}) }}
+            {{ form_row(sortieForm.infosSortie, {'attr': {'class': 'form-control mb-3'}}) }}
         </div>
 
-        <div class="col-md-12">
-            <a href="{{ path('lieu_creation') }}" class="btn btn-link">Ajouter un autre lieu</a>
-        </div>
-        <div>
-
-        </div>
-
-        <div class="col-md-12">
-            <a href="{{ path('sortie_liste') }}" class="btn btn-secondary">Annuler</a>
+        <div class="col-md-12 mt-3 text-center">
+            {{ form_widget(sortieForm.enregistrer, {'attr': {'class': 'btn btn-primary mx-2'}}) }}
+            {{ form_widget(sortieForm.publier, {'attr': {'class': 'btn btn-success mx-2'}}) }}
+            <a href="{{ path('lieu_creation') }}" class="btn btn-info mx-2">Ajouter un autre lieu</a>
+            <a href="{{ path('sortie_liste') }}" class="btn btn-secondary mx-2">Annuler</a>
         </div>
 
         {{ form_end(sortieForm) }}
     </div>
 {% endblock %}
+
 
 
 

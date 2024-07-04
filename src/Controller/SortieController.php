@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 
-
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
@@ -36,7 +35,8 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
 
 

@@ -11,7 +11,6 @@
             {{ form_start(sortieForm, {'attr': {'class': 'mt-4'}}) }}
             <div class="row justify-content-center">
                 <div class="col-md-6">
-    {#                {{ form_widget(sortieForm, {'attr': {'class': 'mt-4'}}) }}#}
 
                     {{ form_row(sortieForm.nom, {'attr': {'class': 'form-control mb-3'}}) }}
                     {{ form_row(sortieForm.dateHeureDebut, {'attr': {'class': 'form-control mb-3'}}) }}
@@ -25,14 +24,14 @@
                 </div>
             </div>
 
-
-            <div class="btn-group" role="group">
-    {#            <button class="btn btn-primary" type="submit" name="action" value="save">Enregistrer</button>#}
-    {#            <button class="btn btn-success" type="submit" name="action" value="publish">Publier la sortie</button>#}
-                <button class="btn btn-danger" type="submit" name="action" value="delete">Supprimer la sortie</button>
+            <div class="text-center mt-4">
+                {{ form_widget(sortieForm.enregistrer, {'attr': {'class': 'btn btn-primary mx-2'}}) }}
+                {{ form_widget(sortieForm.publier, {'attr': {'class': 'btn btn-success mx-2'}}) }}
+                <button class="btn btn-danger mx-2" type="submit" name="action" value="delete">Supprimer</button>
                 <a href="{{ path('sortie_liste') }}" class="btn btn-secondary mx-2">Annuler</a>
-                {{ form_end(sortieForm) }}
             </div>
+
+            {{ form_end(sortieForm) }}
 
 
 

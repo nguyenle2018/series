@@ -24,3 +24,14 @@ node_modules
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+### Ignore les fichiers d'images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+
+### Ne pas ignorer l'image par défaut
+!default-photo.jpg
