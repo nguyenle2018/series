@@ -240,6 +240,16 @@ class Sortie
         }
     }
 
+    #[Assert\Callback]
+    public function limitInscription(ExecutionContextInterface $context): void
+    {
+        if ($this->nbInscriptionsMax > 100) {
+            $context->buildViolation('Le nombre max de participants ne doit pas dépasser 100.')
+                ->atPath('nbInscriptionMax')
+                ->addViolation();
+        }
+    }
+
 
 
 }

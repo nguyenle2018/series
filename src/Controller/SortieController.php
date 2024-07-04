@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 
-
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
@@ -36,7 +35,16 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+//        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+//            // Vérification du nombre maximal de participants
+//            if ($sortie->getNbInscriptionsMax() > 100) {
+//                $this->addFlash('error', 'Le nombre maximal de participants ne peut pas dépasser 100.');
+//                return $this->redirectToRoute('sortie_create');
+//            }
+//        }
+
+
+            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
 
 
@@ -100,7 +108,9 @@ class SortieController extends AbstractController
         $formSearchEvent = $this->createForm(SearchEventType::class, $searchEvent);
 
         $formSearchEvent->handleRequest($request);
+
         $user = $this->getUser();
+
         $sorties = $sortieRecuperation->getAllSortiesAvecFiltres($searchEvent, $user);
 
         return $this->render('sortie/liste.html.twig', [
