@@ -101,7 +101,12 @@ class SortieController extends AbstractController
 
         $formSearchEvent->handleRequest($request);
         $user = $this->getUser();
-        $sorties = $sortieRecuperation->getAllSortiesAvecFiltres($searchEvent, $user);
+
+        if ($formSearchEvent->isSubmitted() && $formSearchEvent->isValid()) {
+            $sorties = $sortieRecuperation->getAllSortiesAvecFiltres($searchEvent, $user);
+        } else {
+            $sorties = $sortieRecuperation->getAllSortiesSansFiltres();
+        }
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,

@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Controller\SortieController;
+use App\Entity\Campus;
 use App\Entity\Etat;
 use App\Form\models\SearchEvent;
 use App\Repository\EtatRepository;
@@ -69,6 +71,7 @@ class SortieRecuperation
         SearchEvent $searchEvent,
         UserInterface $user,
     ) {
+
         $sortieRepository = $this->sortieRepository;
 
         // Vérification si des sorties doivent avoir leurs statuts changées à 'Historisée'
@@ -96,28 +99,21 @@ class SortieRecuperation
             $query->setParameter('search', '%' . $search . '%');
         }
 
-        // Filtre par les dates
-        $dateDebut = $searchEvent->getStartDate();
-        if ($dateDebut === null) {
-            $dateDebut = new \DateTime();
-            $searchEvent->setStartDate($dateDebut);
-        }
+        if ( ($searchEvent->getStartDate() != null) && ($searchEvent->getEndDate() != null)) {
 
-        $dateFin = $searchEvent->getEndDate();
-        if ($dateFin === null) {
-            $dateReference = new \DateTime();
-            $dateFin = $dateReference->modify('+ 10 years');
-            $searchEvent->setEndDate($dateFin);
-        }
-
-        if ($dateFin && $dateDebut) {
             $query->andWhere('s.dateHeureDebut BETWEEN :min AND :max');
-            $query->setParameter('min', $dateDebut);
-            $query->setParameter('max', $dateFin);
+            $query->setParameter('min', $searchEvent->getStartDate());
+            $query->setParameter('max', $searchEvent->getEndDate());
         }
 
-        if ($dateFin < $dateDebut) {
-            $this->addFlash('error', 'La date de fin ne peut pas être inférieure à la date de début');
+        if ($searchEvent->getStartDate() !== null) {
+            $query->andWhere('s.dateHeureDebut > :min');
+            $query->setParameter('min', $searchEvent->getStartDate());
+        }
+
+        if ($searchEvent->getEndDate() !== null) {
+            $query->andWhere('s.dateHeureDebut < :max');
+            $query->setParameter('max', $searchEvent->getEndDate());
         }
 
         //Filtrage pour les sorties dont je suis organisateur
@@ -151,8 +147,6 @@ class SortieRecuperation
         }
 
         $sorties = $query->getQuery()->getResult();
-
-        dump($sorties);
 
         return $sorties;
     }
