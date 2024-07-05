@@ -26,7 +26,7 @@ class ParticipantFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $campuses = $this->campus->findAll();
-
+        $mails = ['outlook.com', 'gmail.com', 'proton.com', 'yahoo.com'];
 
         $faker = Factory::create('fr_FR');
 
@@ -34,13 +34,16 @@ class ParticipantFixtures extends Fixture
             $participant = new Participant();
             $participant->setNom($faker->lastName())
                 ->setPrenom($faker->firstName())
-                ->setPseudo($faker->userName())
-                ->setMail($faker->email())
+//                ->setPseudo($faker->userName())
+//                ->setMail($faker->email())
                 ->setTelephone($faker->phoneNumber())
                 ->setRoles(['ROLE_USER'])
                 ->setPassword($this->userPasswordHasher->hashPassword($participant,'1234'))
                 ->setActif($faker->boolean(80))
                 ->setCampus($faker->randomElement($campuses));
+
+            $participant->setPseudo(strtolower($participant->getPrenom()) . ' ' . strtoupper(substr($participant->getNom(), 0, 1)));
+            $participant->setMail(strtolower($participant->getPrenom()) . '@' . $faker->randomElement($mails));
 
             $manager->persist($participant);
         }

@@ -79,7 +79,6 @@ class ParticipantController extends AbstractController
 
         return $this->render('participant/detail.html.twig', [
             'participant' => $participant
-
         ]);
     }
 
