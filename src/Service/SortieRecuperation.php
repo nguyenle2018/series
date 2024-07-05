@@ -75,9 +75,13 @@ class SortieRecuperation
         $this->changementEtatHistorise();
 
         $sortieRepository = $this->sortieRepository;
-        $sorties = $sortieRepository->findAll();
 
-        return $sorties;
+        $qb = $sortieRepository->createQueryBuilder('s');
+        $query = $qb->select('s')
+            ->andWhere('s.etat != :etatHistorise')
+            ->setParameter('etatHistorise', $this->etatHistorise);
+
+        return $query->getQuery()->getResult();;
     }
 
     public function getAllSortiesAvecFiltres(

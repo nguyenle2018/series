@@ -43,7 +43,9 @@ class ParticipantFixtures extends Fixture
                 ->setCampus($faker->randomElement($campuses));
 
             $participant->setPseudo(strtolower($participant->getPrenom()) . ' ' . strtoupper(substr($participant->getNom(), 0, 1)));
-            $participant->setMail(strtolower($participant->getPrenom()) . '@' . $faker->randomElement($mails));
+           // $participant->setMail(strtolower($participant->getPrenom()) . '@' . $faker->randomElement($mails));
+            //$participant->setMail(strtolower($participant->getPrenom() . '.' . $participant->getNom()) . '@' . $faker->randomElement($mails));
+            $participant->setMail(strtolower($participant->getPrenom()) . rand(1000, 9999) . '@' . $faker->randomElement($mails));
 
             $manager->persist($participant);
         }
